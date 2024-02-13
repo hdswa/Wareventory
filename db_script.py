@@ -1,6 +1,6 @@
 import pymongo
 import random
-
+import bcrypt
 client = pymongo.MongoClient("mongodb://localhost:27017") 
 db = client['Wareventory']  
 
@@ -27,15 +27,18 @@ for collection in collections:
     
       
 def user_generation():
-   
+    password = "felipe78".encode('utf-8')  # Convert the password to bytes
+    salt = bcrypt.gensalt()  # Generate a salt
+    hashed_password = bcrypt.hashpw(password, salt)
+
     new_user_data = {
     "code":"ESJ75089",
-    "password":"felipe78",
+    "password":hashed_password,
     "rol":"admin",
     "DNI":"02767994J",
     "name":"Felipe Ye Chen"
     }
-    db_users = db['users'] 
+    db_users = db['User'] 
     db_users.insert_one(new_user_data)#usuario
     print("Generated Users")
     
@@ -43,7 +46,7 @@ def user_generation():
 
 def clients_generation(n):
     
-    db_clients=db['clients']
+    db_clients=db['Client']
     for i in range(n):
         code="ES"+str(random.randint(10000,20000))
         name=selected_companies[i]
@@ -64,7 +67,7 @@ def clients_generation(n):
     return True
 
 def delivery_generation():
-    db_delivery_companies=db['delivery_companies']
+    db_delivery_companies=db['Delivery_company']
     new_delivery_company={
     "code":"SE01",
     "name":"SEUR",
@@ -79,7 +82,7 @@ def delivery_generation():
    
 
 def jobs_generations(n):
-    db_jobs=db['jobs']
+    db_jobs=db['Jobs']
    
     for i in range(n):
         code="ICES"+str(random.randint(100_000_000,200_000_000))
@@ -100,8 +103,8 @@ def jobs_generations(n):
 
 def job_packages_generation():
     
-    jobs_collection=db['jobs']
-    db_job_packages=db['job_packages']
+    jobs_collection=db['Jobs']
+    db_job_packages=db['Job_packages']
     
     for job in jobs_collection.find({"code": {"$exists": True}}):
         
@@ -127,7 +130,7 @@ def job_packages_generation():
     return True
 
 def generate_item_data(n):
-    db_item_data=db['item_data']
+    db_item_data=db['Item_data']
     for i in range(n):
         locations=[]
         SKU=random.randint(1_000_000,9_999_999_999)
@@ -161,8 +164,8 @@ def generate_locations():
     formatted_number = f"{first_part}.{second_part}.{third_part}.{fourth_part}"
     return formatted_number
 def generate_location_data():
-    items_collection=db['item_data']
-    db_location_data=db['location_data']
+    items_collection=db['Item_data']
+    db_location_data=db['Location_data']
     new_location_data={
     "location":"042.05.3.3",
     "item_data":[{"SKU":"16698758632554","quantity":50},{"SKU":"1687845531","quantity":100}]

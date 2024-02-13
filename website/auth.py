@@ -1,26 +1,28 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash,session
 from .models import User
+from bcrypt import checkpw, gensalt, hashpw
 auth = Blueprint('auth',__name__)
+
 
 @auth.route('/login',methods=['GET','POST'])
 def login():
+    error = None
+    user_code = None
     if request.method == 'POST':
-        user = request.form.get('user')
+        user_code = request.form.get('user')
         password = request.form.get('password')
-        
-        if User.find_by_code(user) is not None:
-            print("I've found a user with the code:",user)
-            print("And the data is",User.find_by_code(user))
-            
-            user_attributes = vars(User.find_by_code(user))  # Get the attributes and their values as a dictionary
-            for attribute, value in user_attributes.items():
-                print(f"{attribute.capitalize()}: {value}")
-                
+    
+        user = User.find_by_code(user_code)
+        if user is not None:
+            password_to_check = password.encode('utf-8')  # Convert the password to bytes
+            if checkpw(password_to_check, user.password.encode('utf-8')):
+                return "<p>Logged in</p>"
+            else:
+                error = "Invalid password"
         else:
-            print("The user you are tying to find doesnt exist")
+            error = "Invalid user"
         
-        
-    return render_template("login.html")
+    return render_template("login.html", error=error, user_code=user_code)
 
 @auth.route('/logout')
 def logout():

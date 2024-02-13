@@ -14,3 +14,4 @@ def generate_random_formatted_number():
 for i in range(100):
     random_formatted_number = generate_random_formatted_number()
     print(random_formatted_number)
+ 
