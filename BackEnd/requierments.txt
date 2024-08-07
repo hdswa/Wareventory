@@ -1,0 +1,8 @@
+pymongo
+bcrypt
+flask
+flask_pymongo
+flask_cors
+python_dotenv
+mongoengine
+jwt

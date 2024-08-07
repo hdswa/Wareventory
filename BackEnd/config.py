@@ -8,8 +8,9 @@ load_dotenv()
 class Config:
     # CONFIG FOR CUSTOM OAUTH SERVER
     SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
-    MONGO_URI = os.getenv('MONGO_URI')
+    # MONGO_URI = os.getenv('MONGO_URI')
     ALGORITHM = os.getenv('ALGORITHM')
+    MONGO_URI="mongodb://localhost:27017"
     # ALGORITHM = os.getenv('ALGORITHM')
     # SESSION_TYPE = os.getenv('SESSION_TYPE')
 
