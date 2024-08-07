@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+
+    {% if session['user'] %}
+    <h1>Home</h1>
+    <p>Welcome to the home page!</p>
+    <p>Here are some links to other pages:</p>
+    <h1>{{session['user']}}</h1>
+    {% else %}
+    
+    {% endif %}
+
+    
+    {% endblock %}

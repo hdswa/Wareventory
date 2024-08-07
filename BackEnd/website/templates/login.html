@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+    %}
+    
+    <!-- Make a nice login form with user a password with tailwind css -->
+    <div class="flex justify-center items-center h-screen">
+        <form class="w-1/3 bg-white p-6 rounded-lg shadow-lg" method="post">
+            <h2 class="text-3xl font-bold mb-4">Login</h2>
+            <div class="mb-4">
+                <label for="user" class="block text-gray-700 font-bold mb-2">
+                    user
+                </label>
+                <input
+                    type="text"
+                    name="user"
+                    id="user"
+                    class="w-full p-2 border rounded-lg"
+                    value="{{user_code if user_code else ''}}"
+                />
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-bold mb-2">
+                    Password
+                </label>
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="w-full p-2 border rounded-lg"
+                />
+            </div>
+            {% if error %}
+            <div class="text-red-500 mb-4">{{error}}</div>
+            {% endif %}
+            <button
+                type="submit"
+                class="w-full bg-blue-500 text-white p-2 rounded-lg"
+            >
+                Login
+            </button>
+        </form>
+
+    
+    {% endblock %}
