@@ -1,0 +1,68 @@
+<div class="grid p-fluid">
+    <div class="col-6 md:col-6">
+        <div class="card">
+            <h5>Transferencia</h5>
+            <form [formGroup]="transferFormGroup">
+            <div class="grid formgrid">
+                <!-- PG caja input -->
+                <div class="col-12" style="padding: 5px;">
+                    <label for="PG">Origen</label>
+                    <input type="text" formControlName="origin" pInputText placeholder="">
+                    <div *ngIf="displayError" class="error-message">
+                        <p style="color:red">{{errorMessage}}</p>
+                    </div>
+                </div>
+                <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
+                    <div class="flex flex-wrap gap-2">
+                        <button pButton pRipple label="Buscar" type="button" (click)="searchItems()"></button>
+                    </div>
+                </div>
+
+                <div *ngIf="displayItemList" class="col-12">
+                    <p-table
+                    [value]="itemListArray"
+                    selectionMode="single" 
+                    [(selection)]="selectedItem"
+                    (onRowSelect)="itemOnRowSelect($event)" 
+                    (onRowUnselect)="itemOnRowUnselect($event)">
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SKU</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item>
+                            <tr [pSelectableRow]="item">
+                                <td>{{item.SKU}}</td>
+                                <td>{{item.quantity}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+
+                <div *ngIf="displayDestination" class="col-12" style="padding:13px">
+                    <label for="Destination">Destino</label>
+                    <input type="text" formControlName="destination" pInputText placeholder="">
+                    <label for="Destination">Cantidad</label>
+                    <input type="text" formControlName="transferQuantity" pInputText placeholder="">
+                    <div *ngIf="displayLocationError">
+                        <p style="color:red">{{errorMessage}}</p>
+                    </div>
+
+                    <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
+                        <div class="flex flex-wrap gap-2">
+                            <button pButton pRipple label="Transferir" type="button" (click)="transferItem()"></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            
+            </div>
+            </form>
+        </div>
+        
+    </div>
+</div>

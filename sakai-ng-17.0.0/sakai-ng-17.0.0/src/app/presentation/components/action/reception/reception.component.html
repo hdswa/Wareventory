@@ -1,0 +1,132 @@
+<div class="grid p-fluid">
+    <div class="col-6">
+        <div class="card">
+            <h5>Recepción</h5>
+            <form [formGroup]="receptionFormGroup">
+            <div class="grid formgrid">
+                <!-- PG caja input -->
+                <div class="col-12" style="padding: 5px;">
+                    <label for="PG">PG caja</label>
+                    <input type="text" formControlName="PG" pInputText placeholder="">
+                    <div *ngIf="showErrorForPG" class="error-message">
+                        <p style="color:red">Error: The PG value is incorrect.</p>
+                    </div>
+                </div>
+
+                <div *ngIf="displayJobCodes" class="col-12">
+                    <p-table
+                    [value]="jobCodes"
+                    selectionMode="single" 
+                    [(selection)]="selectedJobCode" 
+                    (onRowSelect)="onRowSelect($event)" 
+                    (onRowUnselect)="onRowUnselect($event)">
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Seleccione el trabajo al que pertenence</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
+                            <tr [pSelectableRow]="rowData">
+                                <td>{{rowData.jobId}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <div *ngIf="displayJobItems" class="col-12">
+
+                    <p-table
+                        [value]="jobItems"
+                        selectionMode="single" 
+                        [(selection)]="selectedJobItem"
+                        (onRowSelect)="itemOnRowSelect($event)" 
+                        (onRowUnselect)="itemOnRowUnselect($event)">
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SKU item</th>
+                                <th>Cantidad Esperada</th>
+                                <th>Cantidad Recibida</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
+                            <tr [pSelectableRow]="rowData">
+                                <td>{{rowData.itemSKU}}</td>
+                                <td>{{rowData.expectedQuantity}}</td>  
+                                <td>{{rowData.receivedQuantity}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <div *ngIf="displaySKUandQuantity" class="col-12">
+                <!-- SKU item input -->
+                    <div class="col-12" style="padding: 5px;">
+                        <label for="SKU">SKU item</label>
+                        <input type="text" formControlName="SKU" pInputText placeholder="">
+                    </div>
+                
+                    <!-- Cantidad input -->
+                    <div class="col-12" style="padding: 5px;">
+                        <label for="Quantity">Cantidad</label>
+                        <input type="text" formControlName="quantity" pInputText placeholder="">
+                    </div>
+                </div>
+                <!-- Buscar button -->
+                
+           
+                <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
+                    <div class="flex flex-wrap gap-2">
+                        <button pButton pRipple label="Buscar" type="button" (click)="buscarPG()"></button>
+                    </div>
+                </div>
+
+                <div *ngIf="displayError" class="error-message">
+                    <p style="color:red">{{errorMessage}}</p>
+                </div>
+
+                <div *ngIf="!displaySearch">
+                    <div class="col-12" style="padding: 13px;">
+                        <div class="flex" style="flex-wrap: nowrap; justify-content: space-between;">
+                            <!-- First button aligned to the left -->
+                            
+                            <div class="col-6">
+                            <button pButton pRipple label="Recebir" (click)="procesarRecibir()"></button>
+                            </div>
+                            <!-- Second button aligned to the right -->
+                            <div class="col-6">
+                            <button pButton pRipple class="p-button-danger" label="Cancelar" (click)="cancelarRecepcion()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <h5>Ultimas recepciones</h5>
+            <p-table
+            [value]="dataArray"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>PG caja</th>
+                        <th>SKU item</th>
+                        <th>Cantidad</th>
+                
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td>{{rowData.package_code}}</td>
+                        <td>{{rowData.item_SKU}}</td>
+                        <td>{{rowData.quantity}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

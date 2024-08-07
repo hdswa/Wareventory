@@ -1,0 +1,78 @@
+<div class="grid p-fluid">
+    <div class="col-6 md:col-6">
+        <div class="card">
+            <h5>Ubicar</h5>
+            <form [formGroup]="SKUFormGroups">
+                <div class="grid formgrid">
+
+                    <div class="col-12" style="padding: 5px;">
+                        <label for="SKU">SKU ITEM</label>
+                        <input type="text" id="SKU" formControlName="SKU" pInputText placeholder="">
+                        <div *ngIf="displayError" class="error-message">
+                            <p style="color:red">{{errorMessage}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12" *ngIf="displayJobId">
+                        <th>Seleccione el trabajo al que pertenence</th>
+                        <p-table
+                        [value]="jobDataArray"
+                        selectionMode="single" 
+                        [(selection)]="selectedItem" 
+                        (onRowSelect)="onRowSelect($event)" 
+                        (onRowUnselect)="onRowUnselect($event)">
+                        >
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
+                                <tr [pSelectableRow]="rowData">
+                                    <td>{{rowData.jobId}}</td>
+                                    <td>{{rowData.quantity}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+
+                    <div *ngIf="displayLocation" class="col-12">
+                        <div class="col-12" style="padding: 5px;">
+                            <label for="SKU">Location</label>
+                            <input type="text" id="location" formControlName="location" pInputText placeholder="">
+                            <div *ngIf="displayLocationError" class="error-message">
+                                <p style="color:red">{{errorMessage}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
+                        <div class="flex flex-wrap gap-2">
+                            <button pButton pRipple label="Buscar" type="button" (click)="searchSKU()"></button>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!displaySearch">
+                        <div class="col-12" style="padding: 13px;">
+                            <div class="flex" style="flex-wrap: nowrap; justify-content: space-between;">
+                                <!-- First button aligned to the left -->
+                                
+                                <div class="col-6">
+                                <button pButton pRipple label="Ubicar" (click)="ubicar()"></button>
+                                </div>
+                                <!-- Second button aligned to the right -->
+                                <div class="col-6">
+                                <button pButton pRipple class="p-button-danger" (click)="cancelar()" label="Cancelar"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
