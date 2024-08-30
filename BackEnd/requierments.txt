@@ -2,7 +2,9 @@ pymongo
 bcrypt
 flask
 flask_pymongo
-flask_cors
+flask-cors
 python_dotenv
 mongoengine
 jwt
+PyJWT
+flask_login

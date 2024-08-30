@@ -1,7 +1,7 @@
 from . import mongo
 
 from mongoengine import StringField,IntField,ListField,FloatField,ReferenceField,\
-    ComplexDateTimeField,EmbeddedDocumentField,PULL, EmbeddedDocument,DynamicDocument,DateTimeField
+    ComplexDateTimeField,EmbeddedDocumentField,PULL, EmbeddedDocument,DynamicDocument,DateTimeField,BooleanField
 from mongoengine import Document,EmbeddedDocument
 from mongoengine import connect,ValidationError
 
@@ -20,6 +20,13 @@ class User(Document):
     @classmethod
     def find_by_code(cls, code):
         return cls.objects(code=code).first()
+    
+    @property
+    def is_active(self):
+        # Implement your logic to determine if the user is active
+        # For example, you can return True if the user is active
+        return True
+    
 
 class Jobs(Document):
     code = StringField(required=True)
@@ -48,7 +55,7 @@ class Job_packages(Document):
 
     job_code = StringField(required=True)
     PG = StringField(required=True)
-    item_SKU = IntField(required=True)
+    item_SKU = StringField(required=True)
     expected_quantity = StringField(required=True)
     received_quantity = StringField(required=True)
     located_quantity = StringField(required=True)
@@ -76,7 +83,7 @@ class Job_packages(Document):
         
 class Item_data(Document):
     
-    SKU=IntField(required=True)
+    SKU=StringField(required=True)
     locations=ListField(StringField())
     image=StringField(required=True,default="")
     height=IntField(required=True,default=0)
@@ -91,18 +98,38 @@ class Item_data(Document):
 
 
 class location_array(EmbeddedDocument):  # Changed from Document to EmbeddedDocument
-    SKU = IntField(required=True)
+    SKU = StringField(required=True)
     quantity = IntField(required=True)
     
-class Location_data(Document):  # Class names should follow CamelCase convention
+class Location_data(DynamicDocument):
     location = StringField(required=True)
     item_data = ListField(EmbeddedDocumentField(location_array))  # Refer to the corrected class name
     meta = {'collection': 'Location_data'}
+    
     @classmethod
     def get_items_by_location(cls, location):
         return cls.objects.filter(location=location).all()
     
-
+    @classmethod 
+    def update_location(cls, location, sku, quantity, operation):
+        if operation == "delete":
+            location_data = cls.objects(location=location).first()
+            for item in location_data.item_data:
+                if str(item.SKU) == str(sku):
+                    print("item correcto")
+                    item.quantity -= int(quantity)
+                    print(f"Updated item: SKU={item.SKU}, quantity={item.quantity}")
+                    
+                    # Ensure SKU is a string before saving
+                    for item in location_data.item_data:
+                        if not isinstance(item.SKU, str):
+                            item.SKU = str(item.SKU)
+                        print(f"Type of SKU: {type(item.SKU)}, Type of quantity: {type(item.quantity)}")
+                    
+                    location_data.save()
+                    return True
+        return False
+    
 class Log(DynamicDocument):
     user_code = StringField(required=True)
     action = StringField(required=True)
@@ -112,10 +139,10 @@ class Log(DynamicDocument):
    
    
 class Reception_Bascket(DynamicDocument):
-    item_SKU = IntField(required=True);
-    quantity = IntField(required=True);
-    jobId = StringField(required=True);
-    PG= StringField(required=True);
+    item_SKU = StringField(required=True)
+    quantity = IntField(required=True)
+    jobId = StringField(required=True)
+    PG= StringField(required=True)
     meta = {'collection': 'Reception_bascket'}    
 
     @classmethod
@@ -130,3 +157,73 @@ class Reception_Bascket(DynamicDocument):
             return True  # Indicate success
         return False  # Indicate failure (no such bascket found)
         
+
+class Picking_items(EmbeddedDocument):
+    SKU = StringField(required=True)
+    location = StringField(required=True)
+    quantity = IntField(required=True)
+    picked = BooleanField(default=False)
+
+class Picking_list(Document):
+    code = StringField(required=True)
+    items = ListField(EmbeddedDocumentField(Picking_items))
+    status = StringField(required=True)
+    meta = {'collection': 'Picking_list'}
+
+    @classmethod
+    def get_all_codes(cls):
+        print("getting all the code and status")
+        return [{'code': obj.code, 'status': obj.status} for obj in cls.objects.only('code', 'status')]
+
+    @classmethod
+    def set_picked_status(cls, code, sku, location, quantity):
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            print("valores de parametros")
+            print(f"code: {code}, sku: {sku}, location: {location}, quantity: {quantity}")
+            for item in picking_list.items:
+                # print(f"Checking item - SKU: {item.SKU}, location: {item.location}, quantity: {item.quantity}, picked: {item.picked}")
+                if str(item.SKU) == str(sku) and item.location == location and int(item.quantity) == int(quantity):
+                    item.picked = True
+                    print("Item matched and set to picked")
+            # Ensure all SKUs are strings before saving
+            for item in picking_list.items:
+                item.SKU = str(item.SKU)
+            picking_list.save()
+            return True  # Indicate success
+        print("No matching item found or picking list not found")
+        return False  # Indicate failure (no such item found)
+    
+    @classmethod
+    def check_picking_list_status(cls, code):
+       
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            for item in picking_list.items:
+                print("valor de picked:",item.picked)
+                if not item.picked:
+                    return False
+                if item.picked:
+                    picking_list.status = "In Progress"
+                    picking_list.save()
+
+            picking_list.status = "Picked"
+            picking_list.save()
+            return True
+        return False
+    @classmethod
+    def set_picking_list_status(cls, code, status):
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            picking_list.status = status
+            picking_list.save()
+            return True
+        return False
+
+class Shipping_item(Document):
+    code = StringField(required=True)
+
+class Shipping_item(Document):
+    code= StringField(required=True)
+class Shipping_Order(Document):
+    code= StringField(required=True)

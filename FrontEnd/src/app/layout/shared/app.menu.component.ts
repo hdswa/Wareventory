@@ -23,6 +23,9 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Recibir', icon: 'pi pi-fw pi-download', routerLink: ['/action/reception'] },
                     { label: 'Ubicar', icon: 'pi pi-fw pi-box', routerLink: ['/action/placement'] },
                     { label: 'Transferir', icon: 'pi pi-fw pi-sort-alt', routerLink: ['/action/transfer'] },
+                    { label: 'Picking', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/action/picking'] },
+                    { label: 'Shipping', icon: 'pi pi-fw pi-truck',routerLink:['/action/shipping']},
+                   
                 ]
             },
             {

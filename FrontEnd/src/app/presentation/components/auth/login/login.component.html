@@ -8,15 +8,20 @@
                     <div class="text-900 text-3xl font-medium mb-3">Login</div>
                     
                 </div>
-
+                
                 <div>
                     <form [formGroup]="formLogin">
                     <label for="username" class="block text-900 text-xl font-medium mb-2">Username</label>
                     <input id="username" formControlName="username" type="text" placeholder="Username" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
 
                     <label for="password1" class="block text-900 font-medium text-xl mb-2">Password</label>
-                    <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
-
+                    <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" [feedback]="false" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
+                        
+                    
+                    <div *ngIf="loginError">
+                        <p style="color: red; text-align: center;">{{ loginErrorMessage }}</p>
+                    </div>
+                    
                     <div class="flex align-items-center justify-content-between mb-5 gap-5">
                     </div>
                     <button pButton pRipple label="Log In" class="w-full p-3 text-xl" (click)="procesarLogin()"></button>

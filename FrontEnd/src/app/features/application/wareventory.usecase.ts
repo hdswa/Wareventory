@@ -46,4 +46,12 @@ export class WareVentoryUseCase implements UseCase<any, any> {
     postTransfer(params: any): Observable<any> {
         return this.repository.postTransfer(params);
     }
+
+    getPicking(params: any): Observable<any> {
+        return this.repository.getPicking(params);
+    }
+
+    postPicking(param:any):Observable<any>{
+        return this.repository.postPicking(param);
+    }
 }

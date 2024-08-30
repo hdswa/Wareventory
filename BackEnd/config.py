@@ -1,15 +1,14 @@
 import os
-from dotenv import load_dotenv
 
 
-load_dotenv()
+
 
 
 class Config:
     # CONFIG FOR CUSTOM OAUTH SERVER
-    SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
+    SECRET_KEY = "faCUVYkuKTURYhSvaWQs"
     # MONGO_URI = os.getenv('MONGO_URI')
-    ALGORITHM = os.getenv('ALGORITHM')
+    ALGORITHM = "HS256"
     MONGO_URI="mongodb://localhost:27017"
     # ALGORITHM = os.getenv('ALGORITHM')
     # SESSION_TYPE = os.getenv('SESSION_TYPE')

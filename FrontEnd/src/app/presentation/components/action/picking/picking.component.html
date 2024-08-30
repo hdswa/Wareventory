@@ -1,0 +1,142 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div *ngIf="!displayCodes">
+               
+                <h5> <i class="pi pi-fw pi-arrow-left" (click)="goBack()" style="cursor: pointer; font-size: 1.5em; margin-right: 10px;"></i>{{code}}</h5>
+            </div>
+            <div *ngIf="displayCodes">
+                
+                <h5>Picking</h5>
+            </div>
+
+           
+
+            <div *ngIf="displayCodes">
+                <p-dataView #dv [value]="pickingListStatus" layout="grid">
+                    <ng-template let-codes pTemplate="gridItem">
+                        <div class="grid grid-nogutter">
+                            <ng-container *ngFor="let code of codes">
+                                <div class="col-12 md:col-4" *ngIf="code.status !== 'Completed'">
+                                    <div class="card m-3 border-1 surface-border hover-darken"
+                                        [ngClass]="{'green-background': code.status === 'Picked', 'brown-background': code.status === 'Pending', 'yellow-background': code.status === 'In Progress'}"
+                                        (click)="showCodeDetail(code)" 
+                                        style="cursor: pointer;">
+                                        <div class="flex flex-column align-items-center text-center mb-3">
+                                            <div class="text-2xl font-bold">{{code.code}}</div>   
+                                            <div class="text-lg">{{code.status}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+                </p-dataView>
+            </div>
+
+
+            <div *ngIf="!displayCodes" class="flex-container">
+                
+                <div class="col-7">
+                    <p-table
+                        [value]="pickingListItems"
+                        [scrollable]="true"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SKU item</th>
+                                <th>Ubicacion</th>
+                                <th>Cantidad</th>
+                                <th>Recogido</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
+                            <tr>
+                                <td>{{rowData.SKU}}</td>
+                                <td>{{rowData.location}}</td>  
+                                <td>{{rowData.quantity}}</td>
+                                <td>
+                                    <span *ngIf="rowData.picked; else cross">&#10004;</span>
+                                    <ng-template #cross>&#10008;</ng-template>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="col-5">
+                    <!-- Add your card content here -->
+                    <div *ngIf="!checkStatusByList(code)" class="card">
+                        <form [formGroup]="receptionFormGroup">
+                            <div class="col-12" style="padding: 5px; display: flex; flex-direction: column;">
+                                <label for="PG">SKU</label>
+                                <input type="text" formControlName="SKU" pInputText placeholder="">
+                                <label for="PG">Ubicacion</label>
+                                <input type="text" formControlName="location" pInputText placeholder="">
+                                <label for="PG">Cantidad</label>
+                                <input type="text" formControlName="quantity" pInputText placeholder="">
+                                <!-- <div *ngIf="showErrorForPG" class="error-message">
+                                    <p style="color:red">Error: The PG value is incorrect.</p>
+                                </div> -->
+                                <div *ngIf="emptyFormValueError">
+                                    <p style="color:red">{{errorMessage}}</p>
+                                </div>
+                                <div class="col-15" style="padding-top: 10px;">
+                                    <div class="flex flex-wrap gap-2">
+                                        <button pButton pRipple label="Recoger" type="button" (click)="pickup()" style="width: 100%;"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="checkStatusByList(code)" class="card">
+                        <div class="col-15" style="padding-top: 10px;">
+                            <div class="flex flex-wrap gap-2">
+                                <button pButton pRipple label="Finalizar lista" type="button" (click)="endPicking()" style="width: 100%;"></button>
+                            </div>
+                        </div>
+                </div>
+                  
+                
+            </div>
+            
+            
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-darken:hover {
+      background-color: rgba(0, 0, 0, 0.1); /* Adjust the color and opacity as needed */
+    }
+    
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch; /* Ensure both items stretch to the same height */
+    }
+    
+    .col-7 {
+        flex: 7;
+    }
+    
+    .col-5 {
+        flex: 5;
+    }
+    
+    .card {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .green-background{
+        background-color: #23C55e;
+    }
+    .brown-background{
+        background-color: #c8b288;
+    }
+    .yellow-background{
+        background-color: #FFD700;
+    }
+</style>

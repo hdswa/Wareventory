@@ -161,7 +161,7 @@ export class ReceptionComponent {
         console.log("valor de this.receptionFormGroup.value:",this.receptionFormGroup.value)
         var params={
           jobId:jobCode,
-          sku:this.receptionFormGroup.get('SKU').value,
+          sku:this.receptionFormGroup.get('SKU').value.toString(),
           quantity:this.receptionFormGroup.get('quantity').value,
           pg:this.receptionFormGroup.get('PG').value
         }

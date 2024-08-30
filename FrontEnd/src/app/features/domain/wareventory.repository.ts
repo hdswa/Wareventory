@@ -18,4 +18,7 @@ export abstract class WareventoryRepository {
     abstract getReceptionBascketBySKU(params:any): Observable<any>;
     abstract postPlacement(params:any): Observable<any>;
     abstract postTransfer(params:any): Observable<any>;
+
+    abstract getPicking(params:any): Observable<any>;
+    abstract postPicking(param:any): Observable<any>;
 }

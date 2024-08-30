@@ -1,10 +1,17 @@
 import datetime
-from flask import Blueprint, render_template, request, Response,json
-from .models import Job_packages,Jobs,Item_data,Location_data,Log, Reception_Bascket,location_array
+from flask import Blueprint, request, Response,json
+from .models import Job_packages,Jobs,Item_data,Location_data,Log, Reception_Bascket,location_array,Picking_items,Picking_list
 from bcrypt import checkpw, gensalt, hashpw
+
 process = Blueprint('process',__name__)
 
 
+
+# @process.route('/login',methods=['POST'])
+# def login():
+#     print("dentro de login")
+#     jobs_data = []
+#     return Response(json.dumps(jobs_data), mimetype='application/json', status=200)
 
 @process.route('/jobs', methods=['GET'])
 def search_result():
@@ -46,7 +53,7 @@ def search_result():
 def getJobPackages():
     params = request.args   
     jobs_data = []
-    gotResult=False;
+    gotResult=False
     
     
     print("valor de params en /packages GET:============ASD====\n")
@@ -69,7 +76,7 @@ def getJobPackages():
                 "locatedQuantity": jobPackage.located_quantity
             }
             jobs_data.append(job_data)
-        gotResult=True;
+        gotResult=True
             
     #get jobPackages Via id
     if 'jobId' in params and params['jobId'] != '' and not gotResult:
@@ -351,12 +358,6 @@ def postTransfer():
     itemSKU=data['itemSKU']
     quantity=data['quantity']
     
-    
-    
-    
-    
-    
-    
     #comproabcion extra de que el objeto existe en origen
     
     if(Location_data.objects(location=origin).count()==0):
@@ -424,8 +425,44 @@ def postTransfer():
     
     return ""
     
+@process.route('/picking', methods=['GET', 'POST'])
+def picking_operation():
+    if request.method == 'GET':
+        params = request.args
+        if 'code' in params and params['code'] != '':
+            picking_list = Picking_list.objects(code=params['code']).first()
+            if picking_list:
+                items = []
+                for item in picking_list.items:
+                    items.append({
+                        "SKU": item.SKU,
+                        "quantity": item.quantity,
+                        "location": item.location,
+                        "picked": item.picked
+                    })
+                return Response(json.dumps(items), mimetype='application/json', status=200)
+            return not_found("Picking list not found")
+        else:
+            # Retrieve all picking lists if no 'code' parameter is provided
+            return Response(json.dumps(Picking_list.get_all_codes()), mimetype='application/json', status=200)
+        
+    elif request.method == 'POST':
+        params = request.json
+        if (params.get('status')== 'Completed'):
+            print("valores de param",params)
+            Picking_list.set_picking_list_status(params['code'], 'Completed')
+            return Response(json.dumps(params), mimetype='application/json', status=200)
+        else:
+            print("dentro de post picking")
+            Picking_list.set_picked_status(params['code'], params['SKU'], params['location'], params['quantity'])
+            Picking_list.check_picking_list_status(params['code'])
 
-    
+            Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete")
+
+            return Response(json.dumps(params), mimetype='application/json', status=200)
+
+
+    return bad_request("Invalid request method")
         
         
         

@@ -1,65 +1,71 @@
-from flask import Blueprint,Flask, render_template, request, Response,session,redirect,url_for,json,current_app
-from flask_cors import cross_origin,CORS 
-from .models import User
-from bcrypt import checkpw, gensalt, hashpw
-from datetime import datetime as dt, timedelta
+from flask import Blueprint, request, Response, json, current_app,Flask,session,jsonify
+from bcrypt import checkpw
 import jwt
+import bcrypt
+from flask_login import login_user
+from .models import User  # Assuming you have a User model
+from datetime import datetime, timedelta
+from functools import wraps
 
-auth = Blueprint('auth',__name__)
+auth = Blueprint('auth', __name__)
 
-@auth.route('/login',methods=['POST'])
-@cross_origin()
+
+    
+
+@auth.route('/login', methods=['POST'])
 def login():
-    error = None
-    user_code = None
-    if request.method == 'POST':
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+  
+ 
+    if not username or not password:
+        return bad_request("Username and password are required.")
+
+    user = User.find_by_code(username)  # Assuming you have a method to find a user by username
+
+    if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        print("valido")
+
+        token = jwt.encode({
+            'username': username,
+            'expiration': str(datetime.now() + timedelta(days=1)) # Convert datetime to timestamp
+        },
+        current_app.config['SECRET_KEY'], 
+        )
+
         
-        user_code = request.json.get('username')
-        password = request.json.get('password')
-        
-        user = User.find_by_code(user_code)
-        
-        print(user);
-        if user is not None:
-            password_to_check = password.encode('utf-8')  # Convert the password to bytes
-            if checkpw(password_to_check, user.password.encode('utf-8')):
-                session['user'] = user_code
-                
-                # print("secret key")
-                # print(current_app.config['SECRET_KEY'])
-                token_info = generate_jwt({
-                            "user": user.name,
-                            "user-role": user.rol,
-                            "curr_time": dt.now().strftime("%y-%m-%d %H:%M:%S"),
-                            "exp_time": (dt.now() + timedelta(minutes=30)).strftime("%y-%m-%d %H:%M:%S")
-                        })
-                return Response(json.dumps({
-                    "message": "Login successful",
-                    "token":token_info
-                }), status=200)
-            
-            else:
-                return forbidden()
-        else:
-           return not_found()
-        
-    return bad_request()
+
+        return Response(json.dumps({'token':token}), status=200)
+        # return Response(jsonify({'token':token}), status=200)
+       
+    else:
+        return bad_request("Invalid username or password.")
+
+# def generate_jwt(payload):
+#     print("======================================")
+#     print(current_app.config['SECRET_KEY']," ",current_app.config['ALGORITHM'])
+#     jwt_str = jwt.encode(payload, current_app.config['SECRET_KEY'],current_app.config['ALGORITHM'] )
+#     if type(jwt_str) is not str: 
+#         jwt_str = jwt_str.decode()
+#     return jwt_str
+
+# def decode_jwt(token: str):
+#     return jwt.decode(token, app.config['SECRET_KEY'], algorithms=app.config['ALGORITHM'] )
 
 
-
-
-def generate_jwt(payload):
-    print("======================================")
-    print(current_app.config['SECRET_KEY']," ",current_app.config['ALGORITHM'])
-    jwt_str = jwt.encode(payload, current_app.config['SECRET_KEY'],current_app.config['ALGORITHM'] )
-    if type(jwt_str) is not str: 
-        jwt_str = jwt_str.decode()
-    return jwt_str
-
-def decode_jwt(token: str):
-    return jwt.decode(token, app.config['SECRET_KEY'], algorithms=app.config['ALGORITHM'] )
-
-
+def token_required(func):
+    @wraps(func)
+    def decorated(*args,**kwargs):
+        token=request.args.get('token')
+        if not token:
+            return jsonify({'Alert':'Token is missing'},403)
+        try:
+            payload=jwt.decode(token,current_app.config['SECRET_KEY'],algorithms=current_app.config['ALGORITHM'])
+        except:
+            return jsonify({'Alert':'Token is invalid'},403)
+        return decorated
 
 
 #===========================================================================================================================================

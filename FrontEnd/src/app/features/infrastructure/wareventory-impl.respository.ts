@@ -8,11 +8,7 @@ import { EMPTY, Observable } from "rxjs";
     providedIn: 'root',
 })
 export class WareventoryImplRepository extends WareventoryRepository {
-    postLogin(params: any): any {
-        // console.log(this.http.post('http://localhost:5000/login', params).subscribe( data => { console.log(data); }));
-        console.log(params)
-        return this.http.post('http://localhost:5000/login', params);
-    }
+  
 
     constructor(private http: HttpClient) {
         super();
@@ -61,5 +57,19 @@ export class WareventoryImplRepository extends WareventoryRepository {
 
     postTransfer(params: any): any {
         return this.http.post('http://localhost:5000/transfer', params);
+    }
+
+    postLogin(params: any): any {
+        // console.log(this.http.post('http://localhost:5000/login', params).subscribe( data => { console.log(data); }));
+        console.log(params)
+        return this.http.post('http://localhost:5000/login', params);
+    }
+
+    getPicking(params: any): any {
+        return this.http.get('http://localhost:5000/picking',{params});
+    }
+
+    override postPicking(param: any): Observable<any> {
+        return this.http.post('http://localhost:5000/picking', param);
     }
 }

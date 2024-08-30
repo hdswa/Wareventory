@@ -2,6 +2,7 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from config import config
 from flask_cors import CORS
+
 mongo=PyMongo()
 
 def create_app():
@@ -17,10 +18,11 @@ def create_app():
     from .process import process
     
     app.register_blueprint(views,url_prefix='/')
+    CORS(app)
     app.register_blueprint(auth,url_prefix='/')
+    CORS(app)
     app.register_blueprint(process,url_prefix='/')
 
     CORS(app)
-    
     
     return app
