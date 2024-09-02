@@ -288,9 +288,6 @@ def getLog(current_user, *args, **kwargs):
 def postReception(current_user, *args, **kwargs):
     data = request.json
     
-    
-
-
     log_data={"item_SKU":data['sku'],"quantity":data['quantity'],"package_code":data['pg'],"jobId":data['jobId']}
     create_log(current_user,"Reception",log_data)
     
@@ -301,15 +298,11 @@ def postReception(current_user, *args, **kwargs):
     receptioNBasket.PG = data['pg']
     receptioNBasket.save()
     
-    
-    jobPacakge = Job_packages.get_package_by_pg_and_job_code(data['pg'],data['jobId'])
-    
-    
-    
-
-    updatedQuantity=int(jobPacakge[0].received_quantity)+int(data['quantity'])
-    jobPacakge.update(received_quantity=str(updatedQuantity))
-    
+    if(not data['pg']=="directReception"):
+        jobPacakge = Job_packages.get_package_by_pg_and_job_code(data['pg'],data['jobId'])
+        updatedQuantity=int(jobPacakge[0].received_quantity)+int(data['quantity'])
+        jobPacakge.update(received_quantity=str(updatedQuantity))
+        
     
 
     return Response(json.dumps({"message": "Log created successfully"}), mimetype='application/json', status=201)
@@ -399,10 +392,11 @@ def postPlacement(current_user, *args, **kwargs):
         combined_data = item_data_back + item_data_aux
         locationData.update(item_data=combined_data)
 
-    jobPacakge = Job_packages.get_package_by_pg_and_job_code(pg,jobId)
-  
-    updatedQuantity=int(jobPacakge[0].located_quantity)+int(data['quantity'])
-    jobPacakge.update(located_quantity=str(updatedQuantity))
+    if(jobId!="directReception"):
+        jobPacakge = Job_packages.get_package_by_pg_and_job_code(pg,jobId)
+    
+        updatedQuantity=int(jobPacakge[0].located_quantity)+int(data['quantity'])
+        jobPacakge.update(located_quantity=str(updatedQuantity))
     
    
     #update itemData
@@ -602,6 +596,7 @@ def shipping_operations(current_user, *args, **kwargs):
             print("============================dentro de direct shipping")
             if not Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete"):
                 return bad_request("Error in updating location")
+            create_log(current_user,"Direct_Shipping",params)
             return Response(json.dumps(params), mimetype='application/json', status=200)
 
 
@@ -661,6 +656,8 @@ def create_log(user,action,param):
     log.time=str(datetime.datetime.now())
     if(param.get('item_SKU')):
         log.item_SKU=param.get('item_SKU')
+    if(param.get('SKU')):
+        log.item_SKU=param.get('SKU')
     if(param.get('quantity')):
         log.quantity=param.get('quantity')
     if(param.get('origin')):

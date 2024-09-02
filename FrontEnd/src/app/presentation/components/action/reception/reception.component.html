@@ -104,6 +104,30 @@
                 </div>
             </div>
             </form>
+            <div class="card">
+            <div class="grid formgrid">
+                <!-- PG caja input -->
+                <div class="col-12" style="padding: 5px;">
+                    <h5>Recepcion directa</h5>
+                    <form [formGroup]="directReceptionFormGroup">
+
+                    <label for="PG">SKU</label>
+                    <input type="text" formControlName="SKU" pInputText placeholder="">
+                    <label for="PG">Cantidad</label>
+                    <input type="text" formControlName="quantity" pInputText placeholder="">
+                    
+                    <div class="col-12" style="margin-top:10px" *ngIf="displaySearch">
+                        <div class="flex flex-wrap gap-2">
+                            <button pButton pRipple label="Recibir" type="button" (click)="directReception()"></button>
+                        </div>
+                    </div>
+                    <div *ngIf="showErrorForPG" class="error-message">
+                        <p style="color:red">Error: The PG value is incorrect.</p>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
     <div class="col-6">

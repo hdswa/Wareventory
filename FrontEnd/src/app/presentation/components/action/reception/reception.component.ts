@@ -15,8 +15,16 @@ export class ReceptionComponent {
     SKU: new FormControl(''),
     quantity: new FormControl(''), 
   });
+
+  public directReceptionFormGroup=new FormGroup({
+    SKU: new FormControl(''),
+    quantity: new FormControl(''), 
+  });
+
   constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) { 
     this.getLatesReception();
+    this.receptionFormGroup.reset();
+    this.directReceptionFormGroup.reset();
   }
 
   public getLatesReception(){
@@ -200,5 +208,28 @@ export class ReceptionComponent {
 
   toastMessage(severity: string, summary: string, detail: string) {
     this.messageService.add({severity:severity, summary: summary, detail: detail});
+  }
+  directReception(){
+    let param={"sku":this.directReceptionFormGroup.get('SKU').value,"quantity":this.directReceptionFormGroup.get('quantity').value,
+      "pg":"directReception","jobId":"directReception"}
+    this.wareventoryUC.postReception(param).subscribe(
+      (data) => {
+        console.log(data)
+        this.displayError=false;
+        this.displayJobCodes=false;
+        this.displaySKUandQuantity=false;
+        this.displaySearch=true;
+        this.receptionFormGroup.reset();
+        this.selectedJobCode=null;
+        this.selectedJobItem=null;
+        this.displayJobItems=false;
+        this.getLatesReception();
+        this.toastMessage('success', 'Success', 'Recepcion realizada con exito');
+      },
+      (error) => {
+        console.log(error);
+        
+      }
+    );
   }
 }
