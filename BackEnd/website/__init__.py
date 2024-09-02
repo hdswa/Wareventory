@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 mongo=PyMongo()
 
-def create_app():
+def     create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY']=config['development'].SECRET_KEY
     app.config['MONGO_URI']=config['development'].MONGO_URI

@@ -13,7 +13,6 @@ export abstract class WareventoryRepository {
     abstract getJobCodesByPG(params:any): Observable<any>;
     abstract getJobPackagesByJobIdandPG(params:any): Observable<any>;
 
-
     abstract postReception(params:any): Observable<any>;
     abstract getReceptionBascketBySKU(params:any): Observable<any>;
     abstract postPlacement(params:any): Observable<any>;

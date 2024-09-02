@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
@@ -13,17 +14,19 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button class="p-link layout-topbar-button">
+        <!-- <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
-        </button>
+        </button> -->
+        <div *ngIf="!existToken">
         <button class="p-link layout-topbar-button" [routerLink]="'/auth/login'">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
+            <i class="pi pi-sign-in"></i>
+            <span>Log in</span>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
+        </div>
+        <button class="p-link layout-topbar-button" (click)="logout()">
+            <i class="pi pi-sign-out"></i>
+            <span>Log Out</span>
         </button>
     </div>
 </div>

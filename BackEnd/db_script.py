@@ -27,11 +27,13 @@ collections = db.list_collection_names()
 for collection in collections:
     db[collection].drop()
     
-      
+default_password="123456".encode('utf-8')  # Convert the password to bytes
+
 def user_generation():
-    password = "felipe78".encode('utf-8')  # Convert the password to bytes
+    
+
     salt = bcrypt.gensalt()  # Generate a salt
-    hashed_password = bcrypt.hashpw(password, salt)
+    hashed_password = bcrypt.hashpw(default_password, salt)
 
     new_user_data = {
     "code":"ESJ75089",
@@ -44,9 +46,9 @@ def user_generation():
     db_users.insert_one(new_user_data)#usuario
 
 
-    password="felipe78".encode('utf-8')  # Convert the password to bytes
+   
     salt = bcrypt.gensalt()  # Generate a salt
-    hashed_password = bcrypt.hashpw(password, salt)
+    hashed_password = bcrypt.hashpw(default_password, salt)
 
     aux_user_data={
         "code":"aaa",
@@ -62,9 +64,9 @@ def user_generation():
     return True
 
 def normal_user_generation():
-    password = "felipe78".encode('utf-8')  # Convert the password to bytes
+   
     salt = bcrypt.gensalt()  # Generate a salt
-    hashed_password = bcrypt.hashpw(password, salt)
+    hashed_password = bcrypt.hashpw(default_password, salt)
 
     for i in range(5):
         code="ESJ75089"+str(i)
@@ -330,49 +332,6 @@ def generate_picking_list():
 
     return True
 
-# def generate_shipping_list():
-#     db_item_data = db['Item_data']
-#     shipping_list = []
-#     i=0
-#     # Define the number of random items you want to retrieve
-#     num_items = 100  # Change this number as needed
-
-#     # Retrieve random items from the Item_data collection
-#     random_items = db_item_data.aggregate([{"$sample": {"size": num_items}}])
-
-
-#     for item in random_items:
-#         # shipping_list.append(item['SKU'])
-#         # print("valor de la primera ubicacion:",item['locations'][0])
-
-#         new_shipping_item={
-#             "SKU":item['SKU'],
-#             "quantity":1,
-#             "location":item['locations'][0]
-#         }
-#         shipping_list.append(new_shipping_item)
-#         i+=1
-#         if i>=random.randint(1,5):
-#             code="ES"+str(random.randint(10000,20000))
-#             new_shipping_order={
-#                 "code":code,
-#                 "items":shipping_list,
-#                 "client_code":companies_code[random.randint(0,len(companies_code)-1)],
-#                 "delivery_company_code":"SE01",
-#                 "status":"Pending"
-#             }
-#             db['Shipping_order'].insert_one(new_shipping_order)
-#             i=0
-#             shipping_list = []
-
-        
-
-#     print("Generated shipping orders")
-
-
-#     return shipping_list
-
-
 
 user_generation()
 normal_user_generation()
@@ -384,6 +343,5 @@ generate_item_data(500)
 generate_location_data()
 log_reception_generation()
 generate_reception_bascket()
-generate_picking_list()
-# generate_shipping_list()
+generate_picking_list() 
 client.close()

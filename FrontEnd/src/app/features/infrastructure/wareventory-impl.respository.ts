@@ -10,7 +10,7 @@ import { EMPTY, Observable } from "rxjs";
 export class WareventoryImplRepository extends WareventoryRepository {
   
     headers:any;
-
+    apiUrl:string='http://localhost:5000';
     constructor(private http: HttpClient) {
         super();
     }
@@ -23,7 +23,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/jobs',options);
+        return this.http.get(this.apiUrl+'/jobs',options);
     }
 
     getJobPackages(params: any): any {
@@ -33,7 +33,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/packages',options);
+        return this.http.get(this.apiUrl+'/packages',options);
     }
 
     getLocationItems(params: any): any {
@@ -44,7 +44,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/location',options);
+        return this.http.get(this.apiUrl+'/location',options);
     }
     
     getSKUlocations(params: any): any {
@@ -54,7 +54,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/itemSKU',options);
+        return this.http.get(this.apiUrl+'/itemSKU',options);
     }
     getLog(limit: number, action: string): any {
         const token = sessionStorage.getItem('token');
@@ -64,7 +64,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             params: { limit, action }
         };
         console.log(options)
-        return this.http.get('http://localhost:5000/log', options);
+        return this.http.get(this.apiUrl+'//log', options);
     }
     getJobCodesByPG(params: any): any {
         const token = sessionStorage.getItem('token');
@@ -74,7 +74,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             params: params 
         };
         console.log(options)
-        return this.http.get('http://localhost:5000/jobs',options);
+        return this.http.get(this.apiUrl+'/jobs',options);
     }
 
     getJobPackagesByJobIdandPG(params: any): any {
@@ -84,7 +84,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/packages',options);
+        return this.http.get(this.apiUrl+'/packages',options);
     }
 
     postReception(params: any): any {
@@ -102,7 +102,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
         };
     
         console.log("valor de options", options);
-        return this.http.post('http://localhost:5000/reception', params, { headers });
+        return this.http.post(this.apiUrl+'/reception', params, { headers });
     
 
         
@@ -116,7 +116,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/reception_bascket',options);
+        return this.http.get(this.apiUrl+'/reception_bascket',options);
     }
     postPlacement(params: any): any {
         const token = sessionStorage.getItem('token');
@@ -133,7 +133,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
         };
     
         console.log("valor de options", options);
-        return this.http.post('http://localhost:5000/placement', params, options);
+        return this.http.post(this.apiUrl+'/placement', params, options);
     }
 
     postTransfer(params: any): any {
@@ -150,12 +150,12 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers
         };
     
-        return this.http.post('http://localhost:5000/transfer', params,options);
+        return this.http.post(this.apiUrl+'/transfer', params,options);
     }
 
     postLogin(params: any): any {
        
-        return this.http.post('http://localhost:5000/login', params);
+        return this.http.post(this.apiUrl+'/login', params);
     }
 
     getPicking(params: any): any {
@@ -165,7 +165,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/picking',options);
+        return this.http.get(this.apiUrl+'/picking',options);
     }
 
     postPicking(params: any): any {
@@ -182,7 +182,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers
         };
     
-        return this.http.post('http://localhost:5000/picking', params,options);
+        return this.http.post(this.apiUrl+'/picking', params,options);
     }
 
     getShipping(param: any): any {
@@ -192,7 +192,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params: param
         };
-        return this.http.get('http://localhost:5000/shipping',options);
+        return this.http.get(this.apiUrl+'/shipping',options);
     }
 
     getStats(params: any): any {
@@ -202,7 +202,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers,
             params:params
         };
-        return this.http.get('http://localhost:5000/stat',options);
+        return this.http.get(this.apiUrl+'/stat',options);
     }
     override postShipping(params: any): any {
         const token = sessionStorage.getItem('token');
@@ -218,7 +218,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers
         };
         console.log("valor de params", params)
-        return this.http.post('http://localhost:5000/shipping', params,options);
+        return this.http.post(this.apiUrl+'/shipping', params,options);
     }
 
     override postRegister(params: any):any{
@@ -235,7 +235,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
             headers: headers
         };
     
-        return this.http.post('http://localhost:5000/users', params,options);
+        return this.http.post(this.apiUrl+'/users', params,options);
     }
 
     getUsers(): any {
@@ -244,7 +244,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
         const options = {
             headers: headers
         };
-        return this.http.get('http://localhost:5000/users',options);
+        return this.http.get(this.apiUrl+'/users',options);
     }
     
     override deleteUser(code: any): Observable<any> {

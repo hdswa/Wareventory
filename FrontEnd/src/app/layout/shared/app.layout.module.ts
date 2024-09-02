@@ -18,6 +18,8 @@ import { AppConfigModule } from '../config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
 import { DataModule } from 'src/app/features/data-module';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -40,8 +42,10 @@ import { DataModule } from 'src/app/features/data-module';
         RippleModule,
         RouterModule,
         AppConfigModule,
-        DataModule
+        DataModule,
+        ToastModule
     ],
-    exports: [AppLayoutComponent]
+    exports: [AppLayoutComponent],
+    providers: [MessageService]
 })
 export class AppLayoutModule { }

@@ -31,8 +31,6 @@ export class AppMenuComponent implements OnInit {
             },
             
         ];
-       
-        
         if(sessionStorage.getItem('role')=='admin'){
             this.model.push({
                 label: 'Admin',

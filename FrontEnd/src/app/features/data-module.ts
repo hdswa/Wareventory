@@ -15,9 +15,6 @@ export const wareventoryQueryUseCaseProvider = {
 @NgModule({
     providers: [
         wareventoryQueryUseCaseProvider,
-
-
-
         { provide: WareventoryRepository, useClass: WareventoryImplRepository}
     ]
 })

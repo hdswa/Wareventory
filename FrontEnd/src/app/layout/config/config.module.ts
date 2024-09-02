@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppConfigComponent } from './app.config.component';
 
+
 @NgModule({
     imports: [
         CommonModule,

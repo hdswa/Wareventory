@@ -30,7 +30,6 @@ export class ReceptionComponent {
   public getLatesReception(){
     this.wareventoryUC.getLog(10,"Reception").subscribe(
       (data) => {
-          console.log(data)
           this.dataArray=data;
       },
       (error) => {
