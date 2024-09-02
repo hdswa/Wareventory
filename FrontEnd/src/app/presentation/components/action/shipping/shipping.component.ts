@@ -22,6 +22,7 @@ export class ShippingComponent implements OnInit{
   public displayCodes: boolean = true;  
   public scannedItemControl = new FormControl('');
   public endOption:boolean=false;
+  public displayError:boolean=false;
 
   constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
   
@@ -31,6 +32,11 @@ export class ShippingComponent implements OnInit{
     
    this.initVariables()
   }
+  public direcShippingForm =new FormGroup({
+    code: new FormControl(''),
+    location: new FormControl(''),
+    quantity: new FormControl(''),
+  });
 
   initVariables(){
     this.scannedItems=0;
@@ -40,6 +46,8 @@ export class ShippingComponent implements OnInit{
     this.displayCodes=true;
     this.shippingListCodes=[];
     this.getListCodes();
+    this.displayError=false;
+    this.direcShippingForm.reset();
   }
 
   getListCodes(){
@@ -143,5 +151,21 @@ export class ShippingComponent implements OnInit{
   toastMessage(severity: string, summary: string, detail: string) {
     this.messageService.add({severity:severity, summary: summary, detail: detail});
   }
-  
+  directShipping(){
+
+    let param={"SKU":this.direcShippingForm.get('code').value,"location":this.direcShippingForm.get('location').value,"quantity":this.direcShippingForm.get('quantity').value}
+    this.wareventoryUC.postShipping(param).subscribe(
+      (data) => {
+          console.log(data)
+          this.toastMessage('success','success','Salida directo correcto');
+          this.direcShippingForm.reset();
+          // this.router.navigate(['/']);
+      },
+      (error) => {
+          console.log(error);
+          this.displayError=true;
+          this.errorMessage="Hubo un error en el envio directo";
+      }
+    );
+  }
 }

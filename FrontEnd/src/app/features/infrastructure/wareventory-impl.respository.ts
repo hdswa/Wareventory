@@ -217,7 +217,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
         const options = {
             headers: headers
         };
-    
+        console.log("valor de params", params)
         return this.http.post('http://localhost:5000/shipping', params,options);
     }
 

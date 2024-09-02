@@ -14,6 +14,34 @@
            
 
             <div *ngIf="displayCodes">
+                <div class="card">
+                    <h5>Shipping Directo</h5>
+                    <form [formGroup]="direcShippingForm">
+                    <div class="grid formgrid">
+                        <!-- PG caja input -->
+                        <div class="col-12" style="padding: 5px;">
+                            <label for="PG">Codigo</label>
+                            <input type="text" formControlName="code" pInputText placeholder="">
+                            
+                            <label for="PG" style="margin-left: 20px;">Ubicacion</label>
+                            <input type="text" formControlName="location" pInputText placeholder="">
+
+                            <label for="PG" style="margin-left: 20px;">Cantidad</label>
+                            <input type="number" formControlName="quantity" pInputText placeholder="">
+                           
+                            <div *ngIf="displayError" class="error-message">
+                                <p style="color:red">{{errorMessage}}</p>
+                            </div>
+                        </div>
+                        <div class="col-12" style="padding: 13px;">
+                            <div class="flex flex-wrap gap-2">
+                                <button pButton pRipple label="Salida directa" type="button" (click)="directShipping()"></button>
+                            </div>
+                        </div>
+        
+                    </div>
+                    </form>
+                </div>
                 <p-dataView #dv [value]="shippingListCodes" layout="grid">
                     <ng-template let-codes pTemplate="gridItem">
                        

@@ -163,6 +163,8 @@ class Location_data(DynamicDocument):
                 if str(item.SKU) == str(sku):
                     print("item correcto")
                     item.quantity -= int(quantity)
+                    if(item.quantity<0):
+                        return False
                     print(f"Updated item: SKU={item.SKU}, quantity={item.quantity}")
                     
                     # Ensure SKU is a string before saving

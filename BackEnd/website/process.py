@@ -550,7 +550,8 @@ def picking_operation(current_user, *args, **kwargs):
             Picking_list.set_picked_status(params['code'], params['SKU'], params['location'], params['quantity'])
             Picking_list.check_picking_list_status(params['code'])
 
-            Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete")
+            if not Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete"):
+                return bad_request("Error in updating location")
             log_data={"item_SKU":params['SKU'],"quantity":params['quantity'],"location":params['location']}
             create_log(current_user,"Picking",log_data)
             return Response(json.dumps(params), mimetype='application/json', status=200)
@@ -593,10 +594,17 @@ def shipping_operations(current_user, *args, **kwargs):
     
     if request.method == 'POST':
         params = request.json
-        
-        
-        
-        
+        print("====================================")
+        print("valor de params: ",params)   
+        #direct shipping
+        if(params.get('SKU') and params.get('location') and params.get('quantity')):
+
+            print("============================dentro de direct shipping")
+            if not Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete"):
+                return bad_request("Error in updating location")
+            return Response(json.dumps(params), mimetype='application/json', status=200)
+
+
         if(params.get('operation')=='delete' and params.get('code')):
             
             log_data={"code":params['code'],"items":Picking_list.get_items_by_code(params['code'])}
@@ -605,6 +613,7 @@ def shipping_operations(current_user, *args, **kwargs):
            
             return Response(json.dumps(params), mimetype='application/json', status=200)
         
+        #un objeto de la lista de picking se ha empaquetado
         if params.get('code') and params.get('SKU') :
             
             Picking_list.set_picking_list_item_packed(params['code'], params['SKU'], 1)
