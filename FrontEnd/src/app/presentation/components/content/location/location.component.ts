@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 @Component({
   selector: 'app-location',
@@ -8,7 +9,7 @@ import { WareVentoryUseCase } from 'src/app/features/application/wareventory.use
 })
 export class LocationComponent {
 
-  constructor(private wareventoryUC:WareVentoryUseCase){}
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService){}
   public gotData: boolean = false;
   public cols=[
     {field:'SKU',header:'SKU'},
@@ -45,6 +46,7 @@ export class LocationComponent {
           // console.log(data)
           this.dataArray = data;
           this.gotData = true;
+          this.toastMessage('success', 'Success', 'Data retrieved successfully');
       },
       (error) => {
           console.log(error);
@@ -52,5 +54,8 @@ export class LocationComponent {
     );
 
   
+  }
+  toastMessage(severity: string, summary: string, detail: string) {
+    this.messageService.add({severity:severity, summary: summary, detail: detail});
   }
 }

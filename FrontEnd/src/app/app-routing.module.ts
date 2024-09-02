@@ -2,21 +2,19 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./layout/shared/app.layout.component";
-
+import { AuthGuard } from './presentation/components/auth/authGuard/auth.guard';
+import { AdminAuthGuard } from './presentation/components/auth/authGuard/admin.guard';
 @NgModule({
     imports: [
         RouterModule.forRoot([
             {
                 path: '', component: AppLayoutComponent,
                 children: [
-                    { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
-                    { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
-                    { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
-                    { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
-                    { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
-                    { path: 'content', loadChildren: () => import('./presentation/components/content/content.module').then(m => m.ContentModule) },
-                    { path: 'action', loadChildren: () => import('./presentation/components/action/action.module').then(m => m.ActionModule)}
+                    { path: '', loadChildren: () => import('./presentation/components/dashboard/dashboard.module').then(m => m.DashboardModule)},
+                 
+                    { path: 'content', loadChildren: () => import('./presentation/components/content/content.module').then(m => m.ContentModule),canActivate: [AuthGuard] },
+                    { path: 'action', loadChildren: () => import('./presentation/components/action/action.module').then(m => m.ActionModule), canActivate: [AuthGuard]},
+                    { path: 'admin', loadChildren: () => import('./presentation/components/admin/admin.module').then(m => m.AdminModule), canActivate: [AdminAuthGuard] },
                 ]
                 
             },

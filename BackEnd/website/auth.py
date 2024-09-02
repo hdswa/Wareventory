@@ -30,6 +30,7 @@ def login():
 
         token = jwt.encode({
             'username': username,
+            'role': user.role,           
             'expiration': str(datetime.now() + timedelta(days=1)) # Convert datetime to timestamp
         },
         current_app.config['SECRET_KEY'], 
@@ -37,7 +38,7 @@ def login():
 
         
 
-        return Response(json.dumps({'token':token}), status=200)
+        return Response(json.dumps({'token':token,"role":user.role}), status=200)
         # return Response(jsonify({'token':token}), status=200)
        
     else:

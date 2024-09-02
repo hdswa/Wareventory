@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 
 import { FormControl, FormGroup } from '@angular/forms';
-
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-reception',
   templateUrl: './reception.component.html',
@@ -15,7 +15,7 @@ export class ReceptionComponent {
     SKU: new FormControl(''),
     quantity: new FormControl(''), 
   });
-  constructor(private wareventoryUC:WareVentoryUseCase){
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) { 
     this.getLatesReception();
   }
 
@@ -60,9 +60,13 @@ export class ReceptionComponent {
           if(data.length>0){
             this.jobCodes=data;
             this.showErrorForPG=false;
+            this.errorMessage="";
+            this.displayJobCodes=true;
+            
           }
           else{
             this.showErrorForPG=true;
+            this.displayJobCodes=false
           }
         },
       (error) => {
@@ -157,6 +161,10 @@ export class ReceptionComponent {
         console.log("=================hay mas nuemro")
         this.errorMessage="Error: La cantidad recibida es mayor a la esperada";
       }
+      if(this.jobCodes.find(element => element.jobId === jobCode).closed){
+        this.displayError=true;
+        this.errorMessage="Error: El trabajo esta cerrado";
+      }
       else{
         console.log("valor de this.receptionFormGroup.value:",this.receptionFormGroup.value)
         var params={
@@ -178,6 +186,7 @@ export class ReceptionComponent {
             this.selectedJobItem=null;
             this.displayJobItems=false;
             this.getLatesReception();
+            this.toastMessage('success', 'Success', 'Recepcion realizada con exito');
           },
           (error) => {
             console.log(error);
@@ -187,5 +196,9 @@ export class ReceptionComponent {
         );
       }
     }
+  }
+
+  toastMessage(severity: string, summary: string, detail: string) {
+    this.messageService.add({severity:severity, summary: summary, detail: detail});
   }
 }

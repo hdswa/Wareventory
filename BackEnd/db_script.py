@@ -36,7 +36,7 @@ def user_generation():
     new_user_data = {
     "code":"ESJ75089",
     "password":hashed_password,
-    "rol":"admin",
+    "role":"admin",
     "DNI":"02767994J",
     "name":"Felipe Ye Chen"
     }
@@ -51,7 +51,7 @@ def user_generation():
     aux_user_data={
         "code":"aaa",
         "password":hashed_password,
-        "rol":"basic",
+        "role":"basic",
         "DNI":"02767994J",
         "name":"Felipe Ye Chen"
     }
@@ -71,7 +71,7 @@ def normal_user_generation():
         new_user_data = {
         "code":code,
         "password":hashed_password,
-        "rol":"basic",
+        "role":"basic",
         "DNI":"02767994J",
         "name":"Felipe Ye Chen"
         }
@@ -157,7 +157,7 @@ def job_packages_generation():
             new_job_package={
             "job_code":job_code,
             "PG":PG,
-            "item_SKU":item_SKU,
+            "item_SKU":str(item_SKU),
             "expected_quantity":expected_quantity,
             "received_quantity":received_quantity,
             "located_quantity":located_quantity
@@ -239,11 +239,11 @@ def log_reception_generation():
     db_job_packages=db['Job_packages']
     
     for package in db_job_packages.find({"PG": {"$exists": True}}):
-        user_code=db_users.find_one({"rol":"basic"})['code']
+        user_code=db_users.find_one({"role":"basic"})['code']
         package_code=package['PG']
         quantity=package['expected_quantity']
         itemSKU=package['item_SKU']
-        actionTime=generate_random_date();
+        actionTime=generate_random_date()
         new_log={
             "user_code":user_code,
             "action":"Reception",
@@ -263,7 +263,7 @@ def generate_reception_bascket():
     db_bascket = db['Recetion_bascket'] 
     
     new_data={
-        "item_SKU":10,
+        "item_SKU":1041896291,
         "quantity":100,
         "jobId":"ICES127860356",
         "PG":"PG123456789"
@@ -273,19 +273,18 @@ def generate_reception_bascket():
     return True
     
 def generate_random_date():
-    # Define start and end dates for the range
-    start_date = datetime(2023, 1, 1, 0, 0, 0)
-    end_date = datetime(2024, 12, 31, 23, 59, 59)
+    # Define the start and end dates
+    start_date = datetime(2024, 1, 1)
+    end_date = datetime(2024, 12, 31)
     
-    # Generate a random number of seconds to add to the start date
-    seconds_between_dates = int((end_date - start_date).total_seconds())
-    random_seconds = random.randint(0, seconds_between_dates)
+    # Generate a random date between start_date and end_date
+    random_date = start_date + timedelta(
+        seconds=random.randint(0, int((end_date - start_date).total_seconds()))
+    )
     
-    # Calculate the random date within the specified range
-    random_date = start_date + timedelta(seconds=random_seconds)
-    
-    # Format the date as specified: dd/mm/yy hh:mm:ss
-    return random_date.strftime('%d/%m/%y %H:%M:%S')
+    # Format the date to the specified format
+    formatted_date = random_date.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + '+00:00'
+    return formatted_date
 
 
 
@@ -306,9 +305,10 @@ def generate_picking_list():
 
         new_picking_item={
             "SKU":item['SKU'],
-            "quantity":1,
+            "quantity":random.randint(1,4),
             "location":item['locations'][0],
-            "picked":False
+            "picked":False,
+            "packed":False
         }
         picking_list.append(new_picking_item)
         i+=1

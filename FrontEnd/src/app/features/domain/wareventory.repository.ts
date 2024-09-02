@@ -21,4 +21,13 @@ export abstract class WareventoryRepository {
 
     abstract getPicking(params:any): Observable<any>;
     abstract postPicking(param:any): Observable<any>;
+
+    abstract getShipping(param:any): Observable<any>;
+    abstract postShipping(param:any): Observable<any>;
+    abstract getStats(params:any): Observable<any>;
+    abstract postRegister(params:any): Observable<any>;
+    abstract getUsers(): Observable<any>;
+    abstract deleteUser(code:any): Observable<any>;
+    abstract deleteJob(code:any): Observable<any>;
+    abstract closeJob(code:any): Observable<any>;
 }

@@ -11,6 +11,9 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { DataModule } from 'src/app/features/data-module';
 import { TableModule } from 'primeng/table';
+import { DataViewModule } from 'primeng/dataview';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 @NgModule({
     imports: [
         CommonModule,
@@ -22,9 +25,12 @@ import { TableModule } from 'primeng/table';
         PasswordModule,
         ReactiveFormsModule,
         DataModule,
-        TableModule
+        TableModule,
+        DataViewModule,
+        ToastModule
         
     ],
-    declarations: [ShippingComponent]
+    declarations: [ShippingComponent],
+    providers: [MessageService]
 })
 export class ShippingModule { }

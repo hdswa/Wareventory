@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-placement',
   templateUrl: './placement.component.html',
 })
 export class PlacementComponent {
 
-  constructor(private wareventoryUC:WareVentoryUseCase) {
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
 
   }
 
@@ -85,6 +86,7 @@ export class PlacementComponent {
       this.wareventoryUC.postPlacement(params).subscribe(
         (data) => {
           console.log(data)
+          this.toastMessage('success', 'Success', 'Ubicación exitosa');
           this.cancelar();
         },
         (error) => {
@@ -108,5 +110,8 @@ export class PlacementComponent {
     this.displayLocation=false;
     this.SKUFormGroups.reset();
 
+  }
+  toastMessage(severity: string, summary: string, detail: string) {
+    this.messageService.add({severity:severity, summary: summary, detail: detail});
   }
 }

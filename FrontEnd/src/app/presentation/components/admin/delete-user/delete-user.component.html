@@ -1,0 +1,31 @@
+<p-toast></p-toast>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+        
+                <h5>Borrar Usuario</h5>
+
+                <p-dataView #dv [value]="usersList" layout="grid">
+                    <ng-template let-codes pTemplate="gridItem">
+                        <div class="grid grid-nogutter">
+                            <ng-container *ngFor="let code of codes">
+                                <div class="col-12 md:col-4" *ngIf="code.status !== 'Completed'">
+                                    <div class="card m-3 border-1 surface-border hover-darken"
+                                        [ngClass]="{'green-background': code.status === 'Picked', 'brown-background': code.status === 'Pending', 'yellow-background': code.status === 'In Progress'}"
+                                        (click)="deleteUser(code.code)" 
+                                        style="cursor: pointer;">
+                                        <div class="flex flex-column align-items-center text-center mb-3">
+                                            <div class="text-2xl font-bold">{{code.code}}</div>   
+                                            <div class="text-lg">{{code.status}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+                </p-dataView>
+
+        </div>
+    </div>
+</div>
+

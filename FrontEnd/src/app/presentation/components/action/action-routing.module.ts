@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
         { path: 'transfer', loadChildren: () => import('./transfer/transfer.module').then(m => m.TransferModule) },
         { path: 'shipping', loadChildren: () => import('./shipping/shipping.module').then(m => m.ShippingModule) },
         { path: 'picking', loadChildren: () => import('./picking/picking.module').then(m => m.PickingModule) },
+        { path: 'register', loadChildren: () => import('../admin/register/register.module').then(m => m.RegisterModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]

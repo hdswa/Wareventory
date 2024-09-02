@@ -1,2 +1,93 @@
-<p>shipping works!</p>
-asdsadsa
+<p-toast></p-toast>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div *ngIf="!displayCodes">
+               
+                <h5> <i class="pi pi-fw pi-arrow-left" (click)="goBack()" style="cursor: pointer; font-size: 1.5em; margin-right: 10px;"></i>{{code}}</h5>
+            </div>
+            <div *ngIf="displayCodes">
+                
+                <h5>Shipping</h5>
+            </div>
+
+           
+
+            <div *ngIf="displayCodes">
+                <p-dataView #dv [value]="shippingListCodes" layout="grid">
+                    <ng-template let-codes pTemplate="gridItem">
+                       
+                        <div class="grid grid-nogutter">
+                            <ng-container *ngFor="let code of codes">
+                                <div class="col-12 md:col-4">
+                                    
+                                    <div class="card m-3 border-1 surface-border hover-darken"
+                                        
+                                        (click)="showCodeDetail(code)" 
+                                        style="cursor: pointer;">
+                                        <div class="flex flex-column align-items-center text-center mb-3">
+                                            <div class="text-2xl font-bold">{{code}}</div>   
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+                </p-dataView>
+            </div>
+
+            <div *ngIf="!displayCodes">
+                <h5>Total items: {{scannedItems}}/{{totalItems}}</h5>
+            
+                Escanea Objeto:
+                <div style="display: flex; align-items: center;">
+                    <input type="text" pInputText [formControl]="scannedItemControl" (input)="scanItem()" autofocus>
+                    <div *ngIf="endOption">
+                        <button pButton type="button" label="End Shipping" (click)="endShipping()" style="margin-left: 10px;"></button>
+                    </div>
+                </div>
+                <div *ngIf="displayScannedItemError">
+                    <small style="color:red" class="text-danger">{{errorMessage}}</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-darken:hover {
+      background-color: rgba(0, 0, 0, 0.1); /* Adjust the color and opacity as needed */
+    }
+    
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch; /* Ensure both items stretch to the same height */
+    }
+    
+    .col-7 {
+        flex: 7;
+    }
+    
+    .col-5 {
+        flex: 5;
+    }
+    
+    .card {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .green-background{
+        background-color: #23C55e;
+    }
+    .brown-background{
+        background-color: #c8b288;
+    }
+    .yellow-background{
+        background-color: #FFD700;
+    }
+</style>

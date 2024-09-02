@@ -3,13 +3,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
 })
 export class JobsComponent implements OnInit{
 
-  constructor(public layoutService: LayoutService,private wareventoryUC:WareVentoryUseCase) { }
+  constructor(public layoutService: LayoutService,private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) { }
   ngOnInit(): void {
 
   }
@@ -38,10 +39,14 @@ export class JobsComponent implements OnInit{
           this.dataArray = data;
           this.gotData = true;
           // console.log(data)
+          this.toastMessage('success', 'Success', 'Data retrieved successfully');
       },
       (error) => {
           console.log(error);
       }
   );
-}
+  }
+  toastMessage(severity: string, summary: string, detail: string) {
+    this.messageService.add({severity:severity, summary: summary, detail: detail});
+  }
 }

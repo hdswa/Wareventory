@@ -1,70 +1,153 @@
 import datetime
-from flask import Blueprint, request, Response,json
-from .models import Job_packages,Jobs,Item_data,Location_data,Log, Reception_Bascket,location_array,Picking_items,Picking_list
+from flask import Blueprint, request, Response,json,jsonify,current_app
+from .models import Job_packages,Jobs,Item_data,Location_data,Log, Reception_Bascket,location_array,Picking_items,Picking_list,User
 from bcrypt import checkpw, gensalt, hashpw
-
+from functools import wraps
+import jwt
 process = Blueprint('process',__name__)
 
 
 
-# @process.route('/login',methods=['POST'])
-# def login():
-#     print("dentro de login")
-#     jobs_data = []
-#     return Response(json.dumps(jobs_data), mimetype='application/json', status=200)
 
-@process.route('/jobs', methods=['GET'])
-def search_result():
-   
-    params = request.args
-    print("======================Valor de params en path /jobs")
-    print("params:",params)
-    print("==================")
-    jobCodes = []
-    if 'sku' in params and params['sku'] != '':
-        jobCodes.extend(Job_packages.get_job_codes_by_item_sku(params['sku']))
-    if 'jobId' in params and params['jobId'] != '':
-        jobCodes.extend([params['jobId']])
-    if 'supplier' in params and params['supplier'] != '':
-        jobCodes.extend(Jobs.find_by_supplier(params['supplier']))
-    if 'pg' in params and params['pg'] != '':
-        jobCodes.extend(Job_packages.get_job_codes_by_pg(params['pg']))
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        # 
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[1]
+        
+        if not token:
+            
+            return jsonify({'message': 'Token is missing!'}), 401
+        
+        try:
+            data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = data['username']
+            
+        except Exception as e:
+            
+            return jsonify({'message': 'Token is invalid!'}), 401
+        
+        return f(current_user, *args, **kwargs)
     
-    
+    return decorated
 
-    jobs_data = []
-    for jobCode in jobCodes:
-        job = Jobs.find_by_code(jobCode)
-        job_data = {
-            "jobId": jobCode,
-            "jobComment": job.descripcion,
-            "jobSize": job.size,
-            "jobSupplier": job.supplier
-        }
-        jobs_data.append(job_data)
+def admin_token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        # 
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[1]
+        
+        if not token:
+            
+            return jsonify({'message': 'Token is missing!'}), 401
+        
+        try:
+            data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = data['username']
+            if data['role'] != 'admin':
+                return jsonify({'message': 'Token is not an admin!'}), 401
+        except Exception as e:
+            
+            return jsonify({'message': 'Token is invalid!'}), 401
+        
+        return f(current_user, *args, **kwargs)
     
-    print("=========================")
-    print(json.dumps(jobs_data))
-    print("=========================")
-    return Response(json.dumps(jobs_data), mimetype='application/json', status=200)
-    
+    return decorated
 
+
+@process.route('/jobs', methods=['GET','DELETE','POST'])
+@token_required
+def search_result(current_user, *args, **kwargs):
+    
+    if request.method == 'GET':
+        params = request.args
+       
+        
+        jobCodes = []
+        if 'sku' in params and params['sku'] != '':
+            jobCodes.extend(Job_packages.get_job_codes_by_item_sku(params['sku']))
+        if 'jobId' in params and params['jobId'] != '':
+            jobCodes.extend([params['jobId']])
+        if 'supplier' in params and params['supplier'] != '':
+            jobCodes.extend(Jobs.find_by_supplier(params['supplier']))
+        if 'pg' in params and params['pg'] != '':
+            jobCodes.extend(Job_packages.get_job_codes_by_pg(params['pg']))
+        
+        if 'all' in params and params['all'] == 'true':
+            jobCodes.extend(Jobs.get_all_jobs())
+            jobs_data = []
+            for job in jobCodes:
+                job_data = {
+                    "jobId": job.code,
+                    "jobComment": job.descripcion,
+                    "jobSize": job.size,
+                    "jobSupplier": job.supplier,
+                    "description": job.descripcion,
+                    "closed": job.closed
+
+                }
+                jobs_data.append(job_data)
+            return Response(json.dumps(jobs_data), mimetype='application/json', status=200)
+            
+        print("valor de jobCodes: ",jobCodes)
+        jobs_data = []
+        for jobCode in jobCodes:
+            job = Jobs.find_by_code(jobCode)
+            job_data = {
+                "jobId": jobCode,
+                "jobComment": job.descripcion,
+                "jobSize": job.size,
+                "jobSupplier": job.supplier,
+                "closed": job.closed
+            }
+            jobs_data.append(job_data)
+        
+        
+        
+        
+        return Response(json.dumps(jobs_data), mimetype='application/json', status=200)
+    
+    if request.method == 'POST':
+        data = request.json
+        
+        if not data.get('jobId') or not data.get('jobComment') or not data.get('jobSize') or not data.get('jobSupplier'):
+            return bad_request("Missing Data")
+        
+        if Jobs.objects(code=data['jobId']).count() > 0:
+            return bad_request("Job already exists.")
+        
+        job = Jobs()
+        job.code = data['jobId']
+        job.descripcion = data['jobComment']
+        job.size = data['jobSize']
+        job.supplier = data['jobSupplier']
+        job.save()
+        
+        return Response(json.dumps({"message": "Job created successfully"}), mimetype='application/json', status=201)
+
+
+        
 @process.route('/packages', methods=['GET'])
-def getJobPackages():
+@token_required
+def getJobPackages(current_user, *args, **kwargs):
     params = request.args   
     jobs_data = []
     gotResult=False
     
     
-    print("valor de params en /packages GET:============ASD====\n")
-    print("params:",params)
+    
+    
     #get jobPackages via PG and jobID
     if 'pg' in params and params['pg'] != '' and 'jobId' in params and params['jobId'] != '':
-        print("=================================")
-        print("dentro de pg y jobId existe")
-        print("=================================")
+        
+        
+        
         jobPackages = Job_packages.get_package_by_pg_and_job_code(params['pg'],params['jobId'])
-        print("valor de jobpackages")
+        
         
         for jobPackage in jobPackages:
             job_data={
@@ -80,11 +163,11 @@ def getJobPackages():
             
     #get jobPackages Via id
     if 'jobId' in params and params['jobId'] != '' and not gotResult:
-        print("=================================")
-        print("dentro de jobId existe")
-        print("=================================")
+        
+        
+        
         jobPackages = Job_packages.get_package_by_job_code(params['jobId'])
-        print("valor de jobpackages")
+        
         
         for jobPackage in jobPackages:
             job_data={
@@ -100,12 +183,13 @@ def getJobPackages():
 
 
 @process.route('/location', methods=['GET'])
-def getLocationItems():
+@token_required
+def getLocationItems(current_user, *args, **kwargs):
     params = request.args
     
     locations_data=[]
     if 'location' in params and params['location'] != '':
-        print("===========================")
+        
        
         locationData=Location_data.get_items_by_location(params['location'])
        
@@ -123,81 +207,92 @@ def getLocationItems():
     return Response(json.dumps(locations_data), mimetype='application/json', status=200)
 
 @process.route('/itemSKU', methods=['GET'])
-def getLocationBySKU():
-    print("=======================")
-    print("valor de args en /itemSKU GET:"+str(request.args))
+@token_required
+def getLocationBySKU(current_user, *args, **kwargs):
+    
+    
     params = request.args
     locations_data=[]
     if 'itemSKU' in params and params['itemSKU'] != '':
-        print("parametro:"+params['itemSKU'])
-        item=Item_data.get_product_locations_by_sku(params['itemSKU'])
-       
-        locations=item.locations
-        print("localizaciones",locations)
         
-        for location in locations:
-            locationData = Location_data.get_items_by_location(location)
-            for item in locationData[0].item_data:
-                item_sku = str(item.SKU).strip()  # Convert to string and strip whitespace
-                param_sku = str(params['itemSKU']).strip()  # Convert to string and strip whitespace
-                if item_sku == param_sku:
-                    location_data={
-                        "quantity": item.quantity,
-                        "SKU": item.SKU,
-                        "location":location
-                    }
-                    locations_data.append(location_data)
+        item=Item_data.get_product_locations_by_sku(params['itemSKU'])
+        if item:
+            locations=item.locations
+            
+            
+            for location in locations:
+                locationData = Location_data.get_items_by_location(location)
+                for item in locationData[0].item_data:
+                    item_sku = str(item.SKU).strip()  # Convert to string and strip whitespace
+                    param_sku = str(params['itemSKU']).strip()  # Convert to string and strip whitespace
+                    if item_sku == param_sku:
+                        location_data={
+                            "quantity": item.quantity,
+                            "SKU": item.SKU,
+                            "location":location
+                        }
+                        locations_data.append(location_data)
                 
         return Response(json.dumps(locations_data), mimetype='application/json', status=200)
 
 
 @process.route('/log',methods=['GET'])
-def getLog():
+@token_required
+def getLog(current_user, *args, **kwargs):
     # Retrieve the 'limit' parameter from the query string, defaulting to 10 if not provided
     limit = int(request.args.get('limit', 10))
     action=request.args.get('action')
     
-    accion="Reception"
-    logs_data = []
-    # Query logs, order them by 'time' in descending order, and limit the results
-    logs = Log.objects(action=accion).order_by('-time').limit(limit)
-
-    for log in logs:
-        print(f"User Code: {log.user_code}, Action: {log.action}, Time: {log.time}")
-        log_data = {
-            "user_code": log.user_code,
-            "action": log.action,
-            "time": log.time        }
-        # Dynamically add optional fields if they exist
-        for field in ['item_SKU', 'quantity', 'package_code']:
-            if hasattr(log, field):
-                print(f"{field}: {getattr(log, field)}")
-                log_data[field] = getattr(log, field)
-        
-        logs_data.append(log_data)
     
+    logs_data = []
+
+    if action=="all":   
+        logs = Log.objects().order_by('-time').limit(limit)
+        for log in logs:
+           
+            log_data = {
+                "user_code": log.user_code,
+                "action": log.action,
+                "time": log.time        }
+            # Dynamically add optional fields if they exist
+            for field in ['item_SKU', 'quantity', 'package_code']:
+                if hasattr(log, field):
+                    # 
+                    log_data[field] = getattr(log, field)
+            
+            logs_data.append(log_data)
+
+    else:
+    # Query logs, order them by 'time' in descending order, and limit the results
+        logs = Log.objects(action=action).order_by('-time').limit(limit)
+
+        for log in logs:
+       
+            log_data = {
+                "user_code": log.user_code,
+                "action": log.action,
+                "time": log.time        }
+            # Dynamically add optional fields if they exist
+            for field in ['item_SKU', 'quantity', 'package_code']:
+                if hasattr(log, field):
+                    # 
+                    log_data[field] = getattr(log, field)
+            
+            logs_data.append(log_data)
+        
     return Response(json.dumps(logs_data), mimetype='application/json', status=200)
         
                 
 @process.route('/reception',methods=['POST'])
-def postReception():
+@token_required
+def postReception(current_user, *args, **kwargs):
     data = request.json
-    print("========================")
-    print("data:",data)
-    
-    #meter en log
-    #actualizar job packages
     
     
-    
-    log = Log()
-    log.user_code = "admin"
-    log.action = 'Reception'
-    log.time = str(datetime.datetime.now())
-    log.item_SKU = data['sku']
-    log.quantity = data['quantity']
-    log.package_code = data['pg']
-    log.save()
+
+
+    log_data={"item_SKU":data['sku'],"quantity":data['quantity'],"package_code":data['pg'],"jobId":data['jobId']}
+    create_log(current_user,"Reception",log_data)
     
     receptioNBasket = Reception_Bascket()
     receptioNBasket.item_SKU = data['sku']
@@ -208,14 +303,14 @@ def postReception():
     
     
     jobPacakge = Job_packages.get_package_by_pg_and_job_code(data['pg'],data['jobId'])
-    print("===========================")
-    print("valor de quantity en clase:",jobPacakge)
-    print(jobPacakge[0].received_quantity)
+    
+    
+    
 
     updatedQuantity=int(jobPacakge[0].received_quantity)+int(data['quantity'])
     jobPacakge.update(received_quantity=str(updatedQuantity))
     
-    print("?===================")
+    
 
     return Response(json.dumps({"message": "Log created successfully"}), mimetype='application/json', status=201)
           
@@ -223,19 +318,13 @@ def postReception():
         
         
 @process.route('/reception_bascket',methods=['GET'])
-def getReceptionBasketBySKU():
+@token_required
+def getReceptionBasketBySKU(current_user, *args, **kwargs):
     
     
     sku=request.args.get('sku')
    
-    
-    try:
-        sku_int = int(sku)  # Attempt to convert SKU to integer
-    except ValueError:
-        return Response("Invalid SKU format. SKU must be an integer.", status=400)
-    
-    
-    receptionBasket = Reception_Bascket.getReceptionBascketBySKU(sku);
+    receptionBasket = Reception_Bascket.getReceptionBascketBySKU(sku)
     
     basket_data = []
     for basket in receptionBasket: 
@@ -256,11 +345,12 @@ def getReceptionBasketBySKU():
         
         
 @process.route('/placement',methods=['POST'])
-def postPlacement():
+@token_required
+def postPlacement(current_user, *args, **kwargs):
     
     data=request.json
-    print("=============Valor de placement========")
-    print(data)
+    
+    
     
     pg=data['PG']
     itemSKU=data['item_SKU']
@@ -269,15 +359,17 @@ def postPlacement():
     jobId=data['jobId']
     Reception_Bascket.removeOneReceptionBascketByParams(itemSKU, jobId, pg, quantity)
     
-    log=Log()
-    log.user_code="admin"
-    log.action="placement"
-    log.time=str(datetime.datetime.now())
-    log.item_SKU=itemSKU
-    log.quantity=quantity
-    log.location=location
-    log.save()
+    # log=Log()
+    # log.user_code=current_user
+    # log.action="placement"
+    # log.time=str(datetime.datetime.now())
+    # log.item_SKU=itemSKU
+    # log.quantity=quantity
+    # log.location=location
+    # log.save()
     
+    log_data={"item_SKU":itemSKU,"quantity":data['quantity'], "location":location}
+    create_log(current_user,"Placement",log_data)
     
     #store item into location
     if(Location_data.objects(location=location).count()==0):
@@ -288,7 +380,7 @@ def postPlacement():
         locationData.save()
         
     else:
-        print("====================ELSE=====existe ubicacion===============")
+        
         locationData=Location_data.get_items_by_location(location)
         item_data_back=locationData[0].item_data
         item_data_aux=[]
@@ -296,7 +388,7 @@ def postPlacement():
         foundItem=False
         for item in item_data_back:
             if item.SKU==itemSKU:
-                print("item.SKU==itemSKU:"+str(item.SKU)+"=="+str(itemSKU))
+                
                 item.quantity+=quantity
                 foundItem=True
             
@@ -305,13 +397,12 @@ def postPlacement():
             item_data_aux.append(item_data_instance)
             
         combined_data = item_data_back + item_data_aux
-        print("valor de combined_data")
-        for xd in combined_data:
-            
-            print("SKU:",xd.SKU)
-            print("quantity:",xd.quantity)
         locationData.update(item_data=combined_data)
-                
+
+    jobPacakge = Job_packages.get_package_by_pg_and_job_code(pg,jobId)
+  
+    updatedQuantity=int(jobPacakge[0].located_quantity)+int(data['quantity'])
+    jobPacakge.update(located_quantity=str(updatedQuantity))
     
    
     #update itemData
@@ -347,11 +438,12 @@ def postPlacement():
         
         
 @process.route('/transfer',methods=['POST'])
-def postTransfer():
+@token_required
+def postTransfer(current_user, *args, **kwargs):
     
     data=request.json
     
-    print("=============valor en transfer"+str(data))
+    
     
     origin=data['location_origin']
     destination=data['location_destination']
@@ -398,35 +490,35 @@ def postTransfer():
         if item.SKU == itemSKU:
             item.quantity -= quantity
             # Only append the item if its quantity is not 0
-            print("valor de itemSKU:"+str(item.SKU))
-            print("valor de quantity:"+str(item.quantity))
+            
+            
             if item.quantity > 0:
                 item_data_aux.append(item)
                 
         else:
             item_data_aux.append(item)
-    print("valor de itemDataaux:"+str(item_data_aux))
     
-    for item in item_data_aux:
-        print("SKU:",item.SKU)
-        print("quantity:",item.quantity)
+        
  
     locationData.update(item_data=item_data_aux)
     
-    log=Log()
-    log.user_code="admin"
-    log.action="transfer"
-    log.time=str(datetime.datetime.now())
-    log.item_SKU=itemSKU
-    log.quantity=quantity
-    log.origin=origin
-    log.destination=destination
-    log.save()
+    log_data={"itemSKU":itemSKU,"quantity":quantity,"origin":origin,"destination":destination}
+    create_log(current_user,"Transfer",log_data)
+    # log=Log()
+    # log.user_code=current_user
+    # log.action="transfer"
+    # log.time=str(datetime.datetime.now())
+    # log.item_SKU=itemSKU
+    # log.quantity=quantity
+    # log.origin=origin
+    # log.destination=destination
+    # log.save()
     
     return ""
     
 @process.route('/picking', methods=['GET', 'POST'])
-def picking_operation():
+@token_required
+def picking_operation(current_user, *args, **kwargs):
     if request.method == 'GET':
         params = request.args
         if 'code' in params and params['code'] != '':
@@ -435,7 +527,7 @@ def picking_operation():
                 items = []
                 for item in picking_list.items:
                     items.append({
-                        "SKU": item.SKU,
+                        "SKU": str(item.SKU),
                         "quantity": item.quantity,
                         "location": item.location,
                         "picked": item.picked
@@ -448,17 +540,19 @@ def picking_operation():
         
     elif request.method == 'POST':
         params = request.json
-        if (params.get('status')== 'Completed'):
-            print("valores de param",params)
+        if (params.get('status')== 'Completed'):#completar picking
+            
             Picking_list.set_picking_list_status(params['code'], 'Completed')
+            
             return Response(json.dumps(params), mimetype='application/json', status=200)
         else:
-            print("dentro de post picking")
+            
             Picking_list.set_picked_status(params['code'], params['SKU'], params['location'], params['quantity'])
             Picking_list.check_picking_list_status(params['code'])
 
             Location_data.update_location(params['location'], params['SKU'], params['quantity'],"delete")
-
+            log_data={"item_SKU":params['SKU'],"quantity":params['quantity'],"location":params['location']}
+            create_log(current_user,"Picking",log_data)
             return Response(json.dumps(params), mimetype='application/json', status=200)
 
 
@@ -467,19 +561,227 @@ def picking_operation():
         
         
         
+@process.route('/shipping', methods=['GET','POST']) 
+@token_required
+def shipping_operations(current_user, *args, **kwargs):
+
+
+    if request.method == 'GET':
+        
+        
+        lista=Picking_list.get_completed_lists()
+        items_list = []
+        order_list=[]
+        for completed_list in lista:
+            for item in completed_list['items']:
+                items_list.append({
+                    "SKU": item['SKU'],
+                    "location": item['location'],
+                    "quantity": item['quantity'],
+                    "picked": item['picked'],
+                    "packed": item['packed'],
+                   
+                })
+        
+            order_list.append({
+                "code": completed_list['code'],
+                "items": items_list
+            })
+            items_list = []
+        
+        return Response(json.dumps(order_list), mimetype='application/json', status=200)
+    
+    if request.method == 'POST':
+        params = request.json
+        
+        
+        
+        
+        if(params.get('operation')=='delete' and params.get('code')):
+            
+            log_data={"code":params['code'],"items":Picking_list.get_items_by_code(params['code'])}
+            create_log(current_user,"Shipping_Completed",log_data)
+            Picking_list.delete_picking_list(params['code'])
+           
+            return Response(json.dumps(params), mimetype='application/json', status=200)
+        
+        if params.get('code') and params.get('SKU') :
+            
+            Picking_list.set_picking_list_item_packed(params['code'], params['SKU'], 1)
+            return Response(json.dumps(params), mimetype='application/json', status=200)
+
         
         
         
         
         
         
+
+@process.route('/stat', methods=['GET'])
+@token_required
+def getStat(current_user, *args, **kwargs):
+    params = request.args
+    
+    if(params.get('action')=="totalObjects"):
         
+        return Response(json.dumps({"quantity":Location_data.get_total_quantity_all_locations()}), mimetype='application/json', status=200)
+    
+    if(params.get('action')=="totalUsers"):
         
+        return Response(json.dumps({"quantity":User.get_all_users_number()}), mimetype='application/json', status=200)
+    
+    if(params.get('action')=="totalLocations"):
         
+        return Response(json.dumps({"quantity":Location_data.get_all_locations_number()}), mimetype='application/json', status=200)
+    
+    if(params.get('action')=="pendingRequests"):
         
+        return Response(json.dumps({"quantity":Picking_list.get_pending_lists_number()}), mimetype='application/json', status=200)
+    return ""
+
+def create_log(user,action,param):
+
+
+    
+    
+    
+    
+    log=Log()
+    log.user_code=user
+    log.action=action
+    log.time=str(datetime.datetime.now())
+    if(param.get('item_SKU')):
+        log.item_SKU=param.get('item_SKU')
+    if(param.get('quantity')):
+        log.quantity=param.get('quantity')
+    if(param.get('origin')):
+        log.origin=param.get('origin')
+    if(param.get('destination')):
+        log.destination=param.get('destination')
+    if(param.get('jobId')):
+        log.jobId=param.get('jobId')
+    if(param.get('package_code')):
+        log.package_code=param.get('package_code')
+    if(param.get('location')):
+        log.location=param.get('location')  
+    if(param.get('code')):
+        log.code=param.get('code')
+    if(param.get('items')):
+        log.items=param.get('items')
+    log.save()
         
+
+@process.route('/users', methods=['GET','POST','DELETE'])
+@admin_token_required
+def users(current_user, *args, **kwargs):  
+    if request.method=='POST':
+
+        data = request.json
         
+        if not data.get('code') or not data.get('password') or not data.get('role') or not data.get('dni') or not data.get('name'): 
+            return bad_request("Missing Data")
         
+        if User.objects(code=data['code']).count() > 0:
+            return bad_request("User already exists.")
+        
+        user = User()
+        user.code = data['code']
+        user.password = hashpw(data['password'].encode('utf-8'), gensalt()).decode('utf-8')
+        user.role = data['role']
+        user.DNI = data['dni']
+        user.name = data['name']
+        user.save()
+
+        return Response(json.dumps({"message": "User created successfully"}), mimetype='application/json', status=201)
+    if request.method == 'GET':
+        
+        users = User.objects()
+        users_data = []
+        for user in users:
+            user_data = {
+                "code": user.code,
+            }
+            users_data.append(user_data)
+        return Response(json.dumps(users_data), mimetype='application/json', status=200)
+
+    if request.method == 'DELETE':
+        
+        code = request.args.get('code')
+        
+        if not code:
+            return Response(json.dumps({"message": "Code parameter is required"}), mimetype='application/json', status=400)
+        
+        user = User.objects(code=code).first()
+        if not user:
+            return Response(json.dumps({"message": "User not found"}), mimetype='application/json', status=404)
+        
+        user.delete()
+        return Response(json.dumps({"message": "User deleted successfully"}), mimetype='application/json', status=200)
+    
+    
+    return bad_request("Invalid request method")
+
+
+
+@process.route('/jobDelete', methods=['DELETE'])
+@admin_token_required
+def deleteJob(current_user, *args, **kwargs):
+  if request.method == 'DELETE':
+        params = request.args
+        code=request.args.get('jobId')
+        print("====================================")
+        print("dentro de delete con code: ",code)
+        if not code:
+            return Response(json.dumps({"message": "Job ID parameter is required"}), mimetype='application/json', status=400)
+        job=Jobs.objects(code=code).first()
+        if not job:
+            return Response(json.dumps({"message": "Job not found"}), mimetype='application/json', status=404)
+        Job_packages.delete_job_packages_by_job_code(code)
+        job.delete()
+        return Response(json.dumps({"message": "Job deleted successfully"}), mimetype='application/json', status=200)
+  
+
+
+        
+@process.route('/jobClose', methods=['PUT'])
+@admin_token_required
+def closeJob(current_user, *args, **kwargs):
+    if request.method == 'PUT':
+        print("====================================")
+        print("====================================")
+        print("====================================")
+        print("dentro de put")
+        print("valor de request: ",request.args)
+        cod=request.args.get('jobId')
+        print("valor de code: ",cod)
+        if not cod:
+            return bad_request("Missing Data")
+        job = Jobs.objects(code=cod).first()
+        if not job:
+            return not_found("Job not found")
+        job.update(closed=not job.closed)
+        return Response(json.dumps({"message": "Job closed successfully"}), mimetype='application/json', status=200)
+    return bad_request("Invalid request method") 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         
 

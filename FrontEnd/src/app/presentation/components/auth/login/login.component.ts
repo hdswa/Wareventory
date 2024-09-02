@@ -37,11 +37,11 @@ export class LoginComponent {
         this.wareventoryUC.executeLogin(this.formLogin.value).subscribe(
             (data) => {
                 // console.log(data);
-                console.log("valore de token:",data.token);
+                console.log("valore de token:",data);
 
                 sessionStorage.setItem('token', data.token);
                 sessionStorage.setItem('username', this.formLogin.value.username);
-
+                sessionStorage.setItem('role', data.role);
                 this.router.navigate(['/']);
 
                 this.loginError=false;

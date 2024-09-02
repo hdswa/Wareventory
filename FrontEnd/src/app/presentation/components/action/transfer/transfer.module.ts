@@ -11,6 +11,8 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { DataModule } from 'src/app/features/data-module';
 import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 @NgModule({
     imports: [
         CommonModule,
@@ -22,9 +24,11 @@ import { TableModule } from 'primeng/table';
         PasswordModule,
         ReactiveFormsModule,
         DataModule,
-        TableModule
+        TableModule,
+        ToastModule
         
     ],
-    declarations: [TransferComponent]
+    declarations: [TransferComponent],
+    providers: [MessageService]
 })
 export class TransferModule { }

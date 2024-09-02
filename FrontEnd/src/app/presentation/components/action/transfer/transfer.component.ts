@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
-
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-transfer',
@@ -17,7 +17,7 @@ export class TransferComponent {
     transferQuantity: new FormControl(''),
   });
 
-  constructor(private wareventoryUC:WareVentoryUseCase){
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
   }
 
   public displaySearch=true;
@@ -106,6 +106,7 @@ export class TransferComponent {
           this.transferFormGroup.get('transferQuantity').setValue('');
           this.displayError=false;
           this.displayLocationError=false;
+          this.toastMessage('success', 'Success', 'Transferencia exitosa');
           
 
       },
@@ -116,6 +117,10 @@ export class TransferComponent {
     this.displayError=false;
     this.displayLocationError=false;
   }
+  }
+
+  toastMessage(severity: string, summary: string, detail: string) {
+    this.messageService.add({severity:severity, summary: summary, detail: detail});
   }
 
 

@@ -1,9 +1,5 @@
 import os
 
-
-
-
-
 class Config:
     # CONFIG FOR CUSTOM OAUTH SERVER
     SECRET_KEY = "faCUVYkuKTURYhSvaWQs"

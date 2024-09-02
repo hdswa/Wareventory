@@ -4,13 +4,14 @@ from mongoengine import StringField,IntField,ListField,FloatField,ReferenceField
     ComplexDateTimeField,EmbeddedDocumentField,PULL, EmbeddedDocument,DynamicDocument,DateTimeField,BooleanField
 from mongoengine import Document,EmbeddedDocument
 from mongoengine import connect,ValidationError
+import json
 
 connect(db='Wareventory', uuidRepresentation='standard')
 
 class User(Document):
     code = StringField(required=True)
     password = StringField(required=True)
-    rol= StringField(required=True)
+    role= StringField(required=True)
     DNI= StringField(required=True)
     name= StringField(required=True)
     
@@ -21,11 +22,15 @@ class User(Document):
     def find_by_code(cls, code):
         return cls.objects(code=code).first()
     
+    @classmethod
+    def get_all_users_number(cls):
+        return cls.objects().count()
     @property
     def is_active(self):
         # Implement your logic to determine if the user is active
         # For example, you can return True if the user is active
         return True
+    
     
 
 class Jobs(Document):
@@ -34,7 +39,7 @@ class Jobs(Document):
     size = IntField(required=True)
     arrival_method = StringField(required=True)
     descripcion = StringField(required=True)
-    closed = StringField(required=True)
+    closed = BooleanField(default=False)
     
     #db collection name
     meta = {'collection': 'Jobs'}
@@ -50,6 +55,18 @@ class Jobs(Document):
         job_packages = cls.objects(supplier=supplier)
         job_codes = [job_package.code for job_package in job_packages]
         return job_codes
+    @classmethod
+    def get_all_jobs(cls):
+        return cls.objects().all()
+    
+    @classmethod
+    def delete_job(cls, code):
+        job = cls.objects(code=code).first()
+        if job:
+            job.delete()
+            return True
+        return False
+
     
 class Job_packages(Document):
 
@@ -67,8 +84,31 @@ class Job_packages(Document):
         return cls.objects.filter(job_code=job_code).all()
     @classmethod
     def get_job_codes_by_item_sku(cls, item_sku):
+        print("Inside the function===================================")
+        
+        # Print the input item_sku
+        print(f"Input item_sku: {item_sku}")
+        
+        # Perform the query
         job_packages = cls.objects(item_SKU=item_sku)
+        
+        # Print the raw query result
+        print("Raw query result:", job_packages)
+        
+        # Check if any job packages were found
+        if not job_packages:
+            print("No job packages found for the given item_sku.")
+        
+        # Iterate through the job packages and print details
+        for job_package in job_packages:
+            print(f"Comparing item_SKU: {job_package.item_SKU} with input item_sku: {item_sku}")
+        
+        # Extract job codes
         job_codes = [job_package.job_code for job_package in job_packages]
+        
+        # Print the extracted job codes
+        print(f"Extracted job codes: {job_codes}")
+        
         return job_codes
     @classmethod
     def get_job_codes_by_pg(cls, pg):
@@ -79,7 +119,12 @@ class Job_packages(Document):
     @classmethod
     def get_package_by_pg_and_job_code(cls, pg, job_code):
         return cls.objects.filter(PG=pg,job_code=job_code).all()
-    
+    @classmethod
+    def delete_job_packages_by_job_code(cls, code):
+        job_packages = cls.objects(job_code=code)
+        for job_package in job_packages:
+            job_package.delete()
+        return True
         
 class Item_data(Document):
     
@@ -129,7 +174,27 @@ class Location_data(DynamicDocument):
                     location_data.save()
                     return True
         return False
+    @classmethod
+    def get_total_quantity(cls, location, sku):
+        location_data = cls.objects(location=location).first()
+        for item in location_data.item_data:
+            if str(item.SKU) == str(sku):
+                return item.quantity
+        return 0
+
+    @classmethod
+    def get_total_quantity_all_locations(cls):
+        total_quantity = 0
+        all_locations = cls.objects()
+        for location_data in all_locations:
+            for item in location_data.item_data:
+                total_quantity += item.quantity
+        return total_quantity
     
+    @classmethod
+    def get_all_locations_number(cls):
+        return cls.objects().count()
+
 class Log(DynamicDocument):
     user_code = StringField(required=True)
     action = StringField(required=True)
@@ -163,6 +228,7 @@ class Picking_items(EmbeddedDocument):
     location = StringField(required=True)
     quantity = IntField(required=True)
     picked = BooleanField(default=False)
+    packed=BooleanField(default=False)
 
 class Picking_list(Document):
     code = StringField(required=True)
@@ -219,6 +285,49 @@ class Picking_list(Document):
             picking_list.save()
             return True
         return False
+    
+    @classmethod 
+    def set_picking_list_item_packed(cls, code, sku, quantity):
+        print("dentro de la funcion")
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            for item in picking_list.items:
+                if str(item.SKU) == str(sku):
+                    item.quantity-=quantity
+                    if item.quantity==0:
+                        item.packed = True
+           
+            for item in picking_list.items:
+                item.SKU = str(item.SKU)
+            picking_list.save()
+            return True
+
+    @classmethod
+    def get_pending_lists_number(cls):
+        return cls.objects(status='Pending').count()   
+    @classmethod
+    def get_completed_lists(cls):
+        return [{'code': obj.code, 'items': obj.items} for obj in cls.objects.filter(status='Completed').only('code', 'items')]
+    @classmethod
+    def delete_picking_list(cls, code):
+        print("entrando en borrar")
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            picking_list.delete()
+            return True
+        return False
+
+    @classmethod
+    def get_items_by_code(cls, code):
+        picking_list = cls.objects(code=code).first()
+        if picking_list:
+            items = picking_list.items
+            item_list = []
+            for item in items:
+                item_list.append({'SKU': item.SKU, 'location': item.location})    
+            return json.dumps(item_list)
+
+        return None
 
 class Shipping_item(Document):
     code = StringField(required=True)

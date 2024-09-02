@@ -47,15 +47,40 @@ export class JobDetailComponent {
           this.jobPackages=data;
           
           console.log(data)
+          this.initVariable();
       },
       (error) => {
           console.log(error);
       }
 
     )
+   
 
+  }
 
-}
+  public receivedQuantity:number=0;
+  public locatedQuantity:number=0;
+  public totalJobs:number=0;
+  getReceivedJobs() {
+    this.receivedQuantity = this.jobPackages.filter(obj => Number(obj.receivedQuantity) === Number(obj.expectedQuantity)).length;
+  }
+  getTotalJobs(){
+    this.totalJobs = this.jobPackages.length;
+  }
+  getCompletedJobs(){
+    this.locatedQuantity = this.jobPackages.filter(obj => Number(obj.locatedQuantity) === Number(obj.expectedQuantity)).length;
+  }
 
+  initVariable(){
+    this.receivedQuantity=0;
+    this.locatedQuantity=0;
+    this.totalJobs=0;
+    this.getCompletedJobs();
+    this.getReceivedJobs();
+    this.getTotalJobs();
+    console.log(this.receivedQuantity)
+    console.log(this.locatedQuantity)
+    console.log(this.totalJobs)
+  }
   
 }
