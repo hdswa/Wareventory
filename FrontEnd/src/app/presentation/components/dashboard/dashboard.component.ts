@@ -6,7 +6,7 @@ import { Subscription, debounceTime } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
     templateUrl: './dashboard.component.html',
 })
@@ -16,7 +16,10 @@ export class DashboardComponent implements OnInit {
         this.initVariables()
     }
 
-    constructor(private wareventoryUC:WareVentoryUseCase){
+    constructor(private wareventoryUC:WareVentoryUseCase,private translate: TranslateService) {
+        console.log("lengauage",sessionStorage.getItem("language"))
+        this.translate.use(sessionStorage.getItem("language"))
+        
     }
     
 

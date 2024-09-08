@@ -8,25 +8,25 @@
             </div>
             <div *ngIf="displayCodes">
                 
-                <h5>Shipping</h5>
+                <h5>{{'TEXT.SHIPPING' |translate}}</h5>
             </div>
 
            
 
             <div *ngIf="displayCodes">
                 <div class="card">
-                    <h5>Shipping Directo</h5>
+                    <h5>{{'TEXT.DIRECT_SHIPPING' |translate}}</h5>
                     <form [formGroup]="direcShippingForm">
                     <div class="grid formgrid">
                         <!-- PG caja input -->
-                        <div class="col-12" style="padding: 5px;">
-                            <label for="PG">Codigo</label>
+                        <div class="col-12" style="padding: 5px;display: flex;flex-direction: column;">
+                            <label for="PG">{{'TEXT.SKU' |translate}}</label>
                             <input type="text" formControlName="code" pInputText placeholder="">
                             
-                            <label for="PG" style="margin-left: 20px;">Ubicacion</label>
+                            <label for="PG">{{'TEXT.LOCATION' |translate}}</label>
                             <input type="text" formControlName="location" pInputText placeholder="">
 
-                            <label for="PG" style="margin-left: 20px;">Cantidad</label>
+                            <label for="PG">{{'TEXT.QUANTITY' |translate}}</label>
                             <input type="number" formControlName="quantity" pInputText placeholder="">
                            
                             <div *ngIf="displayError" class="error-message">
@@ -35,7 +35,7 @@
                         </div>
                         <div class="col-12" style="padding: 13px;">
                             <div class="flex flex-wrap gap-2">
-                                <button pButton pRipple label="Salida directa" type="button" (click)="directShipping()"></button>
+                                <button pButton pRipple label="{{'TEXT.DIRECT_OUTPUT' |translate}}" type="button" (click)="directShipping()"></button>
                             </div>
                         </div>
         
@@ -66,13 +66,13 @@
             </div>
 
             <div *ngIf="!displayCodes">
-                <h5>Total items: {{scannedItems}}/{{totalItems}}</h5>
+                <h5>{{'TEXT.TOTAL_ITEMS' |translate}}: {{scannedItems}}/{{totalItems}}</h5>
             
-                Escanea Objeto:
+                {{'TEXT.SCAN_ITEMS' |translate}}:
                 <div style="display: flex; align-items: center;">
                     <input type="text" pInputText [formControl]="scannedItemControl" (input)="scanItem()" autofocus>
                     <div *ngIf="endOption">
-                        <button pButton type="button" label="End Shipping" (click)="endShipping()" style="margin-left: 10px;"></button>
+                        <button pButton type="button" label="{{'TEXT.END_SHIPPING' |translate}}" (click)="endShipping()" style="margin-left: 10px;"></button>
                     </div>
                 </div>
                 <div *ngIf="displayScannedItemError">

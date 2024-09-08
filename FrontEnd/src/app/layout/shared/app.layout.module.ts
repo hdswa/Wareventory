@@ -20,6 +20,7 @@ import { AppLayoutComponent } from "./app.layout.component";
 import { DataModule } from 'src/app/features/data-module';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -43,7 +44,8 @@ import { MessageService } from 'primeng/api';
         RouterModule,
         AppConfigModule,
         DataModule,
-        ToastModule
+        ToastModule,
+        DropdownModule
     ],
     exports: [AppLayoutComponent],
     providers: [MessageService]

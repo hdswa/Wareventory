@@ -4,15 +4,40 @@ import { OnInit } from '@angular/core';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+
+const TRANSLATIONS=[
+  'TEXT.JOB_ID',
+  'TEXT.SUPPLIER',
+  'TEXT.DESCRIPTION',
+  'TEXT.SIZE',
+]
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
 })
 export class JobsComponent implements OnInit{
 
-  constructor(public layoutService: LayoutService,private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) { }
-  ngOnInit(): void {
-
+  private translations:{[key:string]:string}={};
+  public cols: any[] = [];
+  constructor(public layoutService: LayoutService,private wareventoryUC:WareVentoryUseCase,private messageService:MessageService,private translateService:TranslateService) { }
+  async ngOnInit(): Promise<void> {
+    this.translateService.use(sessionStorage.getItem('language'));
+    await this.initTranslations();
+    this.initCols();
+    
+  }
+  initTranslations():Promise<void>{
+    return new Promise((resolve,reject)=>{
+        
+        this.translateService.get(TRANSLATIONS).subscribe(translations => {
+            this.translations = translations;
+            resolve();
+        },
+        error=>{
+            reject(error);
+        });
+    });
   }
   public jobFormGroup=new FormGroup({
     jobId: new FormControl(''),
@@ -25,14 +50,16 @@ export class JobsComponent implements OnInit{
   public dataArray: any[] = [];
   public gotData: boolean = false;
 
-  public cols=[
-    { field: 'jobId', header: 'Job ID' },
-    { field: 'jobSupplier', header: 'Supplier' },
-    { field: 'jobComment', header: 'Description' },
-    { field: 'jobSize', header: 'Size' },
-    
-  ]
-  
+  initCols(){
+    this.cols=[
+      
+      { field: 'jobId', header: this.translations['TEXT.JOB_ID'] },
+      { field: 'jobSupplier', header: this.translations['TEXT.SUPPLIER'] },
+      { field: 'jobComment', header: this.translations['TEXT.DESCRIPTION'] },
+      { field: 'jobSize', header: this.translations['TEXT.SIZE'] }
+      
+    ]
+  }
   public processInventoryForm(){
     this.wareventoryUC.getJobs(this.jobFormGroup.value).subscribe(
       (data) => {

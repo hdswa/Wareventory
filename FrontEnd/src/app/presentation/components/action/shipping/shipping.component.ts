@@ -2,6 +2,7 @@ import { Component, OnInit,ViewChild,ElementRef} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transfer',
@@ -24,8 +25,8 @@ export class ShippingComponent implements OnInit{
   public endOption:boolean=false;
   public displayError:boolean=false;
 
-  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
-  
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService,private translateService:TranslateService) {
+    this.translateService.use(sessionStorage.getItem('language'));
   }
 
   ngOnInit(): void {

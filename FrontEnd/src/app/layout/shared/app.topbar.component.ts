@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from "../service/app.layout.service";
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
@@ -16,9 +17,15 @@ export class AppTopBarComponent implements OnInit{
 
     @ViewChild('topbarmenu') menu!: ElementRef;
     public existToken:boolean=false;
-    constructor(public layoutService: LayoutService,private messageService:MessageService) { 
+    constructor(public layoutService: LayoutService,private messageService:MessageService,private translateService:TranslateService) { 
         
     }
+    public dropdownVisible: boolean = false;
+    public languages: any[] = [
+        { label: 'English', value: 'en' },
+        { label: 'Español', value: 'es' }
+    ];
+    public selectedLanguage:string;
     ngOnInit(): void {
         this.existToken=false;
         this.getToken();    
@@ -49,5 +56,19 @@ export class AppTopBarComponent implements OnInit{
 
     toastMessage(severity: string, summary: string, detail: string) {
         this.messageService.add({severity:severity, summary: summary, detail: detail});
+    }
+
+    changeLanguage(language: string) {
+        // this.translateService.useLanguage(language);
+        sessionStorage.setItem('language',language);
+        console.log("valor de language",language)
+        this.translateService.use(language);
+        window.location.reload();
+        console.log("valor de language",language)
+    }
+
+    
+    toggleDropdown() {
+        this.dropdownVisible = !this.dropdownVisible;
     }
 }

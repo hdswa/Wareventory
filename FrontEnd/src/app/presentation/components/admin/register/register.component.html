@@ -2,22 +2,26 @@
 <div class="grid p-fluid">
     <div class="col-6 md:col-6">
         <div class="card">
-            <h5>Registrar nuevo usuario</h5>
+            <h5>{{'ADMIN.REGISTER_NEW_USER' |translate}}</h5>
             <form [formGroup]="registerFormGroup">
             <div class="grid formgrid">
                 <!-- PG caja input -->
                 <div class="col-12" style="padding: 5px;">
-                    <label for="PG">Codigo</label>
+                    <label for="PG">{{'ADMIN.USER_CODE' |translate}}</label>
                     <input type="text" formControlName="code" pInputText placeholder="">
-                    <label for="PG">Contraseña</label>
+                    <label for="PG">{{'ADMIN.PASSWORD' |translate}}</label>
                     <input type="password" formControlName="password1" pInputText placeholder="">
-                    <label for="PG">Repite Contraseña</label>
+                    <label for="PG">{{'ADMIN.REPEAT_PASSWORD' |translate}}</label>
                     <input type="password" formControlName="password2" pInputText placeholder="">
-                    <label for="PG">Role</label>
-                    <input type="text" formControlName="role" pInputText placeholder="">
-                    <label for="PG">DNI</label>
+                    <label for="PG">{{'ADMIN.ROLE' |translate}}</label>
+                    <p-dropdown 
+                    formControlName="role" 
+                    [options]="roles" 
+                    placeholder="Select a role">
+                    </p-dropdown>
+                    <label for="PG">{{'ADMIN.DNI' |translate}}</label>
                     <input type="text" formControlName="dni" pInputText placeholder="">
-                    <label for="PG">Nombre</label>
+                    <label for="PG">{{'ADMIN.NAME' |translate}}</label>
                     <input type="text" formControlName="name" pInputText placeholder="">
                    
                     <div *ngIf="displayError" class="error-message">
@@ -26,7 +30,7 @@
                 </div>
                 <div class="col-12" style="padding: 13px;">
                     <div class="flex flex-wrap gap-2">
-                        <button pButton pRipple label="Registrar" type="button" (click)="register()"></button>
+                        <button pButton pRipple label="{{'ADMIN.REGISTER' |translate}}" type="button" (click)="register()"></button>
                     </div>
                 </div>
 

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { MessageService } from 'primeng/api';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.component.html',
@@ -17,7 +17,8 @@ export class TransferComponent {
     transferQuantity: new FormControl(''),
   });
 
-  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService, private translateService:TranslateService) {
+    this.translateService.use(sessionStorage.getItem('language'));
   }
 
   public displaySearch=true;

@@ -3,6 +3,7 @@ import { WareVentoryUseCase } from 'src/app/features/application/wareventory.use
 
 import { FormControl, FormGroup } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-reception',
   templateUrl: './reception.component.html',
@@ -21,10 +22,11 @@ export class ReceptionComponent {
     quantity: new FormControl(''), 
   });
 
-  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) { 
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService,private translateService:TranslateService) { 
     this.getLatesReception();
     this.receptionFormGroup.reset();
     this.directReceptionFormGroup.reset();
+    this.translateService.use(sessionStorage.getItem('language'));
   }
 
   public getLatesReception(){

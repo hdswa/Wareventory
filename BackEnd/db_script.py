@@ -126,13 +126,11 @@ def jobs_generations(n):
         code="ICES"+str(random.randint(100_000_000,200_000_000))
         supplier=companies_code[random.randint(0,len(companies_code)-1)]
         size=random.randint(1,100)
-        arrival_method=shipment_methods[random.randint(0,len(shipment_methods)-1)]
         closed=False
         new_job={
             "code":code,
             "supplier":supplier,
             "size":size,
-            "arrival_method":arrival_method,
             "descripcion":"Job description",
             "closed":closed
         }
@@ -181,7 +179,7 @@ def generate_item_data(n):
         width=random.randint(5,50)
         weight=height*length*width/10000
         new_item_data={
-        "SKU":SKU,
+        "SKU":str(SKU),
         "locations":locations,
         "image":image,
         "height":height,

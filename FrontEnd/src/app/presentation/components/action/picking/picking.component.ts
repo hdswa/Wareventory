@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-transfer',
   templateUrl: './picking.component.html',
@@ -25,7 +26,8 @@ export class PickingComponent implements OnInit {
     location: new FormControl(''),
     quantity: new FormControl(''), 
   });
-  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService,private translateService:TranslateService) { 
+    this.translateService.use(sessionStorage.getItem('language'));
   }
 
   ngOnInit(): void {
@@ -48,7 +50,11 @@ export class PickingComponent implements OnInit {
       (data) => {
           console.log(data)
           this.pickingListCodes=data.map(item=>item.code);
-          this.pickingListStatus=data
+         
+          this.pickingListStatus = data
+          .filter(item => item.status !== 'Completed')
+          .sort((a, b) => a.code.localeCompare(b.code));
+          
         },
       (error) => {
           console.log(error);
@@ -66,7 +72,8 @@ export class PickingComponent implements OnInit {
     this.wareventoryUC.getPicking(param).subscribe(
       (data) => {
           console.log("pickinglistItme",data)
-          this.pickingListItems=data;
+       
+          this.pickingListItems=data.sort((a, b) => (a.code.localeCompare(b.code)));
           this.checkStatusByCode(this.code)
       },
       (error) => {

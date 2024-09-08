@@ -3,16 +3,23 @@ import { WareVentoryUseCase } from 'src/app/features/application/wareventory.use
 import { Router } from '@angular/router';
 import { FormGroup,FormControl } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
 })
 export class RegisterComponent implements OnInit{
 
-  constructor(private wareventoryUC: WareVentoryUseCase,private router:Router,private messageService:MessageService) { }
+  constructor(private wareventoryUC: WareVentoryUseCase,private router:Router,private messageService:MessageService,private translateService:TranslateService) {
+    this.translateService.use(sessionStorage.getItem('language'));
+   }
 
+  public roles=[
+    {label:'Administrador',value:'admin'},
+    {label:'Usuario',value:'user'}
+  ]
   ngOnInit(): void {
-    this.checkAdmin();
+   
   }
   public registerFormGroup =new FormGroup({
     code: new FormControl(''),
@@ -25,17 +32,7 @@ export class RegisterComponent implements OnInit{
 
   public displayError=false;
   public errorMessage="";
-  checkAdmin() {//si entra manipulando sessionStorage
-    this.wareventoryUC.postRegister({"x":"x"}).subscribe(
-      (data) => {
-          console.log(data)
-      },
-      (error) => {
-          console.log(error);
-          // this.router.navigate(['/auth/login']);
-      }
-    );
-  }
+  
 
   register(){
 

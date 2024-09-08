@@ -46,6 +46,8 @@ export class WareventoryImplRepository extends WareventoryRepository {
         };
         return this.http.get(this.apiUrl+'/location',options);
     }
+
+
     
     getSKUlocations(params: any): any {
         const token = sessionStorage.getItem('token');
@@ -102,10 +104,7 @@ export class WareventoryImplRepository extends WareventoryRepository {
         };
     
         console.log("valor de options", options);
-        return this.http.post(this.apiUrl+'/reception', params, { headers });
-    
-
-        
+        return this.http.post(this.apiUrl+'/reception', params, { headers });   
         
     }
 
@@ -289,6 +288,94 @@ export class WareventoryImplRepository extends WareventoryRepository {
        
     
         return this.http.put(`http://localhost:5000/jobClose`,{"jobId":code}, options);
+    }   
+
+
+    addJob(params: any): any {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No token found in sessionStorage');
+            return;
+        }
+    
+        console.log("valor de token", token);
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const options = {
+            headers: headers
+        };
+    
+        return this.http.post(this.apiUrl+'/jobs', params,options);
     }
 
+    addJobPackage(params: any):any {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No token found in sessionStorage');
+            return;
+        }
+    
+        console.log("valor de token", token);
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const options = {
+            headers: headers
+        };
+    
+        return this.http.post(this.apiUrl+'/packages', params,options);
+        
+    }
+
+    postNewShippingList(params: any): any {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No token found in sessionStorage');
+            return;
+        }
+    
+        console.log("valor de token", token);
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const options = {
+            headers: headers
+        };
+        
+        console.log("valor de params", params);
+        return this.http.post(this.apiUrl+'/new_picking_list', params,options);
+    }
+
+    deleteLocation(params: any): any {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No token found in sessionStorage');
+            return;
+        }
+    
+        console.log("valor de token", token);
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const options = {
+            headers: headers,
+            params:params
+        };
+    
+        return this.http.delete(this.apiUrl+'/location',options);
+    }
+
+    override putLocation(params: any): any {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No token found in sessionStorage');
+            return;
+        }
+    
+        console.log("valor de token", token);
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const options = {
+            headers: headers
+        };
+    
+        return this.http.put(this.apiUrl+'/location', params,options);
+    }
 }

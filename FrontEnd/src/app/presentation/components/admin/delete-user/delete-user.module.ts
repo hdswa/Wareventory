@@ -15,6 +15,15 @@ import { TableModule } from 'primeng/table';
 import { DataViewModule } from 'primeng/dataview';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule } from '@ngx-translate/core';
+
+
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  }
 @NgModule({
     imports: [
         CommonModule,
@@ -28,7 +37,14 @@ import { MessageService } from 'primeng/api';
         DataModule,
         TableModule,
         DataViewModule,
-        ToastModule
+        ToastModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateModule,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
     ],
     declarations: [DeleteUserComponent],
     providers: [MessageService]

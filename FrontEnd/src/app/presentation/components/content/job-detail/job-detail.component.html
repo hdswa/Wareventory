@@ -5,24 +5,26 @@
             <div class="grid formgrid">
 
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0">
-                   <h2>Job ID: <br>   {{jobId}}</h2>
+                   <h2>{{'TEXT.JOB_ID' |translate}}: <br>   {{jobId}}</h2>
 				</div>
 
-                <div class="col-12 mb-2 lg:col-8 lg:mb-0"></div>
+                <div class="col-12 mb-2 lg:col-8 lg:mb-0">
+                    
+                </div>
                 
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0">
-                <h3>Job Supplier:<br>    <span style="color:gray;">{{supplier}} </span></h3>
+                <h3>{{'TEXT.SUPPLIER' |translate}}:<br>    <span style="color:gray;">{{supplier}} </span></h3>
                 </div>
 
                 <div class="col-12 mb-2 lg:col-8 lg:mb-0"></div>
                 
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0">
-                <h3>Size: <br>   <span style="color:gray;">{{jobSize}} </span></h3></div>
+                <h3>{{'TEXT.SIZE' |translate}}: <br>   <span style="color:gray;">{{jobSize}} </span></h3></div>
                 
                 <div class="col-12 mb-2 lg:col-8 lg:mb-0"></div>
                 
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0">
-                <h3>Description:<br><span style="color:gray;">{{jobDescription}} </span></h3>
+                <h3>{{'TEXT.DESCRIPTION' |translate}}:<br><span style="color:gray;">{{jobDescription}} </span></h3>
                 </div>
                 
 
@@ -40,13 +42,13 @@
     <div class="card">
         <div class="grid formgrid">
             <div class="col-4 mb-2 lg:col-4 lg:mb-0">
-                <h6>Trabajos Recibidos:{{receivedQuantity}}</h6>
+                <h6>{{'TEXT.RECEIVED_JOBS' |translate}}:{{receivedQuantity}}</h6>
             </div>
             <div class="col-4 mb-2 lg:col-4 lg:mb-0">
-                <h6>Trabajos:{{totalJobs}}</h6>
+                <h6>{{'TEXT.JOBS' |translate}}:{{totalJobs}}</h6>
             </div>
             <div class="col-4 mb-2 lg:col-4 lg:mb-0">
-                <h6>Trabajos Completados:{{locatedQuantity}}</h6>
+                <h6>{{'TEXT.COMPLETED_JOBS' |translate}}:{{locatedQuantity}}</h6>
             </div>
         </div>
     </div>

@@ -2,19 +2,19 @@
 <div class="grid p-fluid">
 	<div class="col-12 md:col-20">
 		<div class="card">
-			<h5>Busqueda por Localización</h5>
+			<h5>{{'TEXT.LOCATION_SEARCH' |translate}}</h5>
 			<form [formGroup]="locationFormGroup">
 			<div class="grid formgrid">
                 
 				<div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="SKU item">SKU ITEM</label>
+                    <label for="SKU item">{{'TEXT.SKU' |translate}}</label>
 					<input type="text" formControlName="itemSKU" pInputText placeholder="">
 				</div>
 
 				<div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;"></div>
 
 				<div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="location">Ubicación</label>
+                    <label for="location">{{'TEXT.LOCATION' |translate}}</label>
 					<input type="text" formControlName="location" pInputText placeholder="000.00.00">
 				</div>
 

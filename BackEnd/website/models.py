@@ -25,11 +25,19 @@ class User(Document):
     @classmethod
     def get_all_users_number(cls):
         return cls.objects().count()
+    @classmethod
+    def is_admin(cls, code):
+        user = cls.objects(code=code).first()
+        if user.role == "admin":
+            return True
+        return False
     @property
     def is_active(self):
         # Implement your logic to determine if the user is active
         # For example, you can return True if the user is active
         return True
+    
+
     
     
 
@@ -37,7 +45,6 @@ class Jobs(Document):
     code = StringField(required=True)
     supplier = StringField(required=True)
     size = IntField(required=True)
-    arrival_method = StringField(required=True)
     descripcion = StringField(required=True)
     closed = BooleanField(default=False)
     
@@ -73,9 +80,9 @@ class Job_packages(Document):
     job_code = StringField(required=True)
     PG = StringField(required=True)
     item_SKU = StringField(required=True)
-    expected_quantity = StringField(required=True)
-    received_quantity = StringField(required=True)
-    located_quantity = StringField(required=True)
+    expected_quantity = IntField(required=True)
+    received_quantity = IntField(required=True)
+    located_quantity = IntField(required=True)
     #db collection name
     meta = {'collection': 'Job_packages'}
     
@@ -125,7 +132,12 @@ class Job_packages(Document):
         for job_package in job_packages:
             job_package.delete()
         return True
-        
+    @classmethod
+    def add_new_package(cls,jobId,PG,SKU,quantity):
+        job_package = cls(job_code=jobId, PG=PG, item_SKU=SKU, expected_quantity=quantity, received_quantity=0, located_quantity=0)
+        job_package.save()
+        return True
+
 class Item_data(Document):
     
     SKU=StringField(required=True)
@@ -139,7 +151,8 @@ class Item_data(Document):
     meta = {'collection': 'Item_data'}
     @classmethod
     def get_product_locations_by_sku(cls, sku):
-        return cls.objects(SKU=sku).first()
+        print("valor de sku",sku)
+        return cls.objects(SKU=str(sku)).first()
 
 
 class location_array(EmbeddedDocument):  # Changed from Document to EmbeddedDocument
@@ -152,9 +165,14 @@ class Location_data(DynamicDocument):
     meta = {'collection': 'Location_data'}
     
     @classmethod
-    def get_items_by_location(cls, location):
+    def get_items_by_location(  cls, location):
         return cls.objects.filter(location=location).all()
-    
+    @classmethod
+    def get_location_by_sku(cls, sku):
+        location_data = cls.objects(item_data__SKU=sku).first()
+        if location_data:
+            return location_data.location
+        return None
     @classmethod 
     def update_location(cls, location, sku, quantity, operation):
         if operation == "delete":
@@ -261,6 +279,11 @@ class Picking_list(Document):
             return True  # Indicate success
         print("No matching item found or picking list not found")
         return False  # Indicate failure (no such item found)
+    @classmethod
+    def new_picking_list(cls, code, items):
+        picking_list = cls(code=code, items=items, status='Pending')
+        picking_list.save()
+        return True
     
     @classmethod
     def check_picking_list_status(cls, code):

@@ -10,6 +10,13 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DashboardsRoutingModule } from './dashboard-routing.module';
 import { DataModule } from 'src/app/features/data-module';
+import { TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  }
 @NgModule({
     imports: [
         CommonModule,
@@ -21,7 +28,14 @@ import { DataModule } from 'src/app/features/data-module';
         PanelMenuModule,
         ButtonModule,
         DashboardsRoutingModule,
-        DataModule
+        DataModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateModule,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
     ],
     declarations: [DashboardComponent]
 })

@@ -1,29 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router,ActivatedRoute} from '@angular/router';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
+import { TranslateService } from '@ngx-translate/core';
+
+const TRANSLATIONS=[
+  'TEXT.PG',
+  'TEXT.SKU',
+  'TEXT.EXPECTED_QUANTITY',
+  'TEXT.RECEIVED_QUANTITY',
+  'TEXT.LOCATED_QUANTITY',
+]
 
 @Component({
   selector: 'app-job-detail',
   templateUrl: './job-detail.component.html',
 })
-export class JobDetailComponent {
-
+export class JobDetailComponent implements OnInit {
+  public cols: any[] = [];
+  public translations:{[key:string]:string}={};
+  async ngOnInit(): Promise<void> {
+    await this.initTranslations();
+    this.initCols();
+  }
+  initTranslations():Promise<void>{
+    return new Promise((resolve,reject)=>{
+        
+        this.translateService.get(TRANSLATIONS).subscribe(translations => {
+            this.translations = translations;
+            console.log("valor de trans",this.translations)
+            resolve();
+        },
+        error=>{
+            reject(error);
+        });
+    });
+  }
 
   public jobId: string;
   public supplier:string;
   public jobSize: number;
   public jobDescription: string;
   public jobObject: any[] = [];
+  
 
   jobPackages:any[] = [];
-  public cols=[
-    { field: 'PG', header: 'PG' },
-    { field: 'itemSKU', header: 'SKU' },
-    { field: 'expectedQuantity', header: 'Expected Quantity' },
-    { field: 'receivedQuantity', header: 'Received Quantity' },
-    { field: 'locatedQuantity', header: 'Located Quantity' },
-  ]
-  constructor(private router: Router, private activatedRoute: ActivatedRoute,private wareventoryUC:WareVentoryUseCase) {
+
+  initCols(){
+    this.cols=[
+      { field: 'PG', header: this.translations['TEXT.PG'] },
+      { field: 'itemSKU', header: this.translations['TEXT.SKU'] },
+      { field: 'expectedQuantity', header: this.translations['TEXT.EXPECTED_QUANTITY'] },
+      { field: 'receivedQuantity', header: this.translations['TEXT.RECEIVED_QUANTITY'] },
+      { field: 'locatedQuantity', header: this.translations['TEXT.LOCATED_QUANTITY'] },
+    ]
+  }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute,private wareventoryUC:WareVentoryUseCase
+    ,private translateService:TranslateService) 
+   {
+    this.translateService.use(sessionStorage.getItem('language'));
     this.jobId = this.activatedRoute.snapshot.paramMap.get('jobId');
     var jobIdParam={'jobId':this.jobId}
 

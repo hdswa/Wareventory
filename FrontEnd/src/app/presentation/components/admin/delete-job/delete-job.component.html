@@ -3,9 +3,11 @@
     <div class="col-12">
         <div class="card">
         
-                <h5>Borrar Trabajo</h5>
-
-                <p-dataView #dv [value]="jobList" layout="grid">
+                <h5>{{'ADMIN.DELETE_JOB' |translate}}</h5>
+                <div style="justify-content: center;display: flex;align-items: center;">
+                  <input type="text" [(ngModel)]="filterText" placeholder="{{'ADMIN.FILTER_BY_CODE' |translate}}" (input)="applyFilter()">
+                </div>
+                <p-dataView #dv [value]="filteredJobList" layout="grid" [rows]="9" [paginator]="true">
                     <ng-template let-jobs pTemplate="gridItem">
                         <div class="grid grid-nogutter">
                             <ng-container *ngFor="let job of jobs">

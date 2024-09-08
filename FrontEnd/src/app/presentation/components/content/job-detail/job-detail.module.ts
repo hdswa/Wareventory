@@ -9,6 +9,13 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { DataModule } from 'src/app/features/data-module';
 import { TableModule } from 'primeng/table';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule } from '@ngx-translate/core';
+
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  }
 @NgModule({
     imports: [
         CommonModule,
@@ -20,7 +27,14 @@ import { TableModule } from 'primeng/table';
         PasswordModule,
         ReactiveFormsModule,
         DataModule,
-        TableModule
+        TableModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateModule,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
         
     ],
     declarations: [JobDetailComponent]

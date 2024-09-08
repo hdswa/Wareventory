@@ -2,12 +2,12 @@
 <div class="grid p-fluid">
     <div class="col-6 md:col-6">
         <div class="card">
-            <h5>Ubicar</h5>
+            <h5>{{'TEXT.LOCATE' |translate}}</h5>
             <form [formGroup]="SKUFormGroups">
                 <div class="grid formgrid">
 
                     <div class="col-12" style="padding: 5px;">
-                        <label for="SKU">SKU ITEM</label>
+                        <label for="SKU">{{'TEXT.SKU' |translate}}</label>
                         <input type="text" id="SKU" formControlName="SKU" pInputText placeholder="">
                         <div *ngIf="displayError" class="error-message">
                             <p style="color:red">{{errorMessage}}</p>
@@ -16,7 +16,7 @@
 
 
                     <div class="col-12" *ngIf="displayJobId">
-                        <th>Seleccione el trabajo al que pertenence</th>
+                        <th>{{'TEXT.JOB_SELECT_TEXT' |translate}}</th>
                         <p-table
                         [value]="jobDataArray"
                         selectionMode="single" 
@@ -26,8 +26,8 @@
                         >
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Cantidad</th>
+                                    <th>{{'TEXT.ID' |translate}}</th>
+                                    <th>{{'TEXT.QUANTITY' |translate}}</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
@@ -42,7 +42,7 @@
 
                     <div *ngIf="displayLocation" class="col-12">
                         <div class="col-12" style="padding: 5px;">
-                            <label for="SKU">Location</label>
+                            <label for="SKU">{{'TEXT.LOCATION' |translate}}</label>
                             <input type="text" id="location" formControlName="location" pInputText placeholder="">
                             <div *ngIf="displayLocationError" class="error-message">
                                 <p style="color:red">{{errorMessage}}</p>
@@ -52,7 +52,7 @@
 
                     <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
                         <div class="flex flex-wrap gap-2">
-                            <button pButton pRipple label="Buscar" type="button" (click)="searchSKU()"></button>
+                            <button pButton pRipple label="{{'TEXT.SEARCH' |translate}}" type="button" (click)="searchSKU()"></button>
                         </div>
                     </div>
 
@@ -62,7 +62,7 @@
                                 <!-- First button aligned to the left -->
                                 
                                 <div class="col-6">
-                                <button pButton pRipple label="Ubicar" (click)="ubicar()"></button>
+                                <button pButton pRipple label="{{'TEXT.LOCATE' |translate}}" (click)="ubicar()"></button>
                                 </div>
                                 <!-- Second button aligned to the right -->
                                 <div class="col-6">

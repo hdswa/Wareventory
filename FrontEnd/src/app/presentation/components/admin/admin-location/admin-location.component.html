@@ -1,0 +1,91 @@
+<p-toast></p-toast>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+        
+                <h5>{{'ADMIN.LOCATION_MANAGEMENT' |translate}}</h5>
+                <div style="justify-content: center;display: flex;align-items: center; margin-top: 10px;">
+                    <input type="text" [(ngModel)]="filterText" placeholder="{{'ADMIN.FILTER_BY_CODE' |translate}}" (input)="applyFilter()">
+                </div>
+                <p-dataView #dv [value]="filteredLocationList" layout="grid" [rows]="9" [paginator]="true">
+                  
+                    <ng-template let-codes pTemplate="gridItem">
+                        <div class="grid grid-nogutter">
+                            <ng-container *ngFor="let code of codes">
+                                <div class="col-12 md:col-4">
+                                    <div class="card m-3 border-1 surface-border hover-darken"
+                                    (click)="locationDetail(code)" 
+                                    style="cursor: pointer;"
+                                    >
+                                       
+            
+                                        <div class="flex flex-column align-items-center text-center mb-3">
+                                            <div class="text-2xl font-bold">{{code}}</div>   
+                                            
+                                            
+                                            <div style="display: flex;margin-top:10px">
+                                                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                                                  <i class="pi pi-trash" (click)="deleteLocation(code,$event)" style="cursor: pointer;"></i>
+                                                </div>
+                                                <!-- <div style="flex: 1; display: flex; align-items: center; justify-content: center; margin-left: 20px;">
+                                                  <i class="pi pi-lock" (click)="closeJob(job.jobId,$event)" style="cursor: pointer;"></i>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+                </p-dataView>
+                
+        </div>
+    </div>
+    <p-dialog header="Detalles de la ubicacion" [(visible)]="displayLocationDetailDialog" [modal]="true" [style]="{width: '50vw'}">
+        <div class="col-12 md:col-12">
+            {{selectedCode}}
+
+            <p-table [value]="itemDetail" scrollable="true" scrollHeight="500px">
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th>SKU</th>
+                      <th>Cantidad</th>
+                      <th></th>
+                   
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-editing="editing">
+                <tr [pSelectableRow]="rowData">
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input type="text" pInputText [(ngModel)]="rowData.SKU" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ rowData.SKU }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input type="text" pInputText [(ngModel)]="rowData.quantity" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ rowData.quantity }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="deleteRow(rowData.SKU)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            </p-table>
+        </div>
+        <p-footer>
+            <button pButton type="button" label="Actualizar" (click)="updateLocationData()"></button>
+        </p-footer>
+        </p-dialog>
+        
+</div>

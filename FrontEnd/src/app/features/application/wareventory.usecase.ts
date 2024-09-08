@@ -86,6 +86,30 @@ export class WareVentoryUseCase implements UseCase<any, any> {
     closeJob(code: any): Observable<any> {
         return this.repository.closeJob(code);
     }
+
+    addJob(params: any): Observable<any> {
+        return this.repository.addJob(params);
+    }
+
+    addJobPackage(params: any): Observable<any> {
+        return this.repository.addJobPackage(params);
+    }
+
+    postNewShippingList(params: any): Observable<any> {
+        return this.repository.postNewShippingList(params);
+    }
+
+    deleteLocation(code: any): Observable<any> {
+        return this.repository.deleteLocation(code);
+    }
+
+    postLocation(params: any): Observable<any> {
+        return this.repository.putLocation(params);
+    }
+
+    putLocation(params: any): Observable<any> { 
+        return this.repository.putLocation(params);
+    }
     
     
 }

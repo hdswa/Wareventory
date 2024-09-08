@@ -1,0 +1,153 @@
+
+<p-toast></p-toast>
+<div class="grid p-fluid">
+    
+    <div class="col-6 md:col-6">
+        <div class="card">
+            <h5>{{'ADMIN.REGISTER_NEW_JOB' |translate}}</h5>
+            <form [formGroup]="newJobForm">
+            <div class="grid formgrid">
+                <!-- PG caja input -->
+                <div class="col-12" style="padding: 5px;">
+                    <label for="PG">{{'ADMIN.JOB_CODE' |translate}}</label>
+                    <input type="text" formControlName="jobId" pInputText placeholder="">
+                    <label for="PG">{{'ADMIN.SUPPLIER' |translate}}</label>
+                    <input type="text" formControlName="jobSupplier" pInputText placeholder="">
+                   
+                    <label for="PG">{{'ADMIN.DESCRIPTION' |translate}}</label>
+                    <input type="text" formControlName="jobComment" pInputText placeholder="">
+                   
+                   
+                    <!-- <div *ngIf="displayError" class="error-message">
+                        <p style="color:red">{{errorMessage}}</p>
+                    </div> -->
+                </div>
+                <div class="col-12" style="padding: 13px;">
+                    <div class="flex flex-wrap gap-2">
+                        <button pButton pRipple label="{{'ADMIN.ADD' |translate}}" type="button" (click)="addJob()"></button>
+                    </div>
+                </div>
+
+            </div>
+            </form>
+        </div>
+        
+    </div>
+       <div class="col-6 md:col-6">
+        <div class="card">
+            <h5>{{'ADMIN.REGISTER_PACKAGES' |translate}}</h5> 
+            
+            <div class="flex flex-wrap gap-3">
+                <button pButton type="button" label="{{'ADMIN.IMPORT_FROM_JSON' |translate}}"(click)="showJSONdialog()"></button>
+           
+            <button pButton type="button" label="{{'ADMIN.ADD_PACKAGE' |translate}}"(click)="showDialog()"></button>
+
+            </div>
+          
+            <p-table [value]="jobPackages" scrollable="true" scrollHeight="500px">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{'ADMIN.PG' |translate}}</th>
+                        <th>{{'ADMIN.SKU' |translate}}</th>
+                        <th>{{'ADMIN.QUANTITY' |translate}}</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-editing="editing">
+                    <tr [pSelectableRow]="rowData">
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input type="text" pInputText [(ngModel)]="rowData.PG" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.PG }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input type="text" pInputText [(ngModel)]="rowData.SKU" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.SKU }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input type="number" pInputText [(ngModel)]="rowData.quantity" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.quantity }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="deleteRow(rowData)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    
+    <p-dialog header="{{'ADMIN.ADD_PACKAGE' |translate}}" [(visible)]="displayDialog" [modal]="true" [style]="{width: '25vw'}">
+        <div class="col-12 md:col-12">
+            <div class="card">
+                
+                <form [formGroup]="jobPackagesForm">
+                <div class="grid formgrid">
+                    <!-- PG caja input -->
+                    <div class="col-12" style="padding: 5px;">
+                        <label for="PG">{{'ADMIN.PG' |translate}}</label>
+                        <input type="text" formControlName="PG" pInputText placeholder="">
+                        <label for="PG">{{'ADMIN.SKU' |translate}}</label>
+                        <input type="text" formControlName="SKU" pInputText placeholder="">
+                       
+                        <label for="PG">{{'ADMIN.QUANTITY' |translate}}</label>
+                        <input type="number" formControlName="quantity" pInputText placeholder="" min="0" step="1">
+
+                    </div>
+                        <div class="col-12" style="padding: 13px;">
+                            <div class="flex flex-wrap gap-2">
+                                <button pButton pRipple label="{{'ADMIN.ADD' |translate}}" type="button" (click)="addJobPackage()"></button>
+                            </div>
+                        </div>
+                    
+                </div>
+                </form>
+            </div>
+            </div>
+        <p-footer>
+            <button pButton type="button" label="{{'ADMIN.CLOSE' |translate}}" icon="pi pi-times" (click)="hideDialog()"></button>
+        </p-footer>
+    </p-dialog>
+
+
+    <p-dialog header="{{'ADMIN.IMPORT_FROM_JSON' |translate}}" [(visible)]="displayJSONdialog" [modal]="true" [style]="{width: '25vw'}">
+        <div class="col-12 md:col-12">
+            <div class="card">  
+                    
+                    <textarea 
+                    rows="5"
+                    cols="30" 
+                    pInputTextarea 
+                    placeholder="[{'PG':'PG1','SKU':'SKU1','quantity':1},{'PG':'PG2','SKU':'SKU2','quantity':2}]"
+                    [(ngModel)]="packageJSON">
+                    </textarea>
+                                
+            </div>
+            <div class="col-12" style="padding: 13px;">
+                <div class="flex flex-wrap gap-2">
+                    <button pButton pRipple label="{{'ADMIN.ADD' |translate}}" type="button" (click)="addJobPackageByJSON()"></button>
+                </div>
+            </div>
+            </div>
+        <p-footer>
+            <button pButton type="button" label="{{'ADMIN.CLOSE' |translate}}" icon="pi pi-times" (click)="hideJSONdialog()"></button>
+        </p-footer>
+    </p-dialog>
+</div>

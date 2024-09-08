@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareVentoryUseCase } from 'src/app/features/application/wareventory.usecase';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-placement',
   templateUrl: './placement.component.html',
 })
 export class PlacementComponent {
 
-  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService) {
-
+  constructor(private wareventoryUC:WareVentoryUseCase,private messageService:MessageService,private translateService:TranslateService) { 
+    this.translateService.use(sessionStorage.getItem('language'));
   }
 
   public displayError=true;

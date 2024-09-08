@@ -29,4 +29,9 @@ export abstract class WareventoryRepository {
     abstract deleteUser(code:any): Observable<any>;
     abstract deleteJob(code:any): Observable<any>;
     abstract closeJob(code:any): Observable<any>;
+    abstract addJob(params:any): Observable<any>;
+    abstract addJobPackage(params:any): Observable<any>;
+    abstract postNewShippingList(param:any): Observable<any>;
+    abstract deleteLocation(params:any): Observable<any>;
+    abstract putLocation(params:any): Observable<any>;
 }

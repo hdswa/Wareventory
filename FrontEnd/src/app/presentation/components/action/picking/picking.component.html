@@ -8,13 +8,13 @@
             </div>
             <div *ngIf="displayCodes">
                 
-                <h5>Picking</h5>
+                <h5>{{'TEXT.PICKING' |translate}}</h5>
             </div>
 
            
 
             <div *ngIf="displayCodes">
-                <p-dataView #dv [value]="pickingListStatus" layout="grid">
+                <p-dataView #dv [value]="pickingListStatus" layout="grid" [rows]="9" [paginator]="true">
                     <ng-template let-codes pTemplate="gridItem">
                         <div class="grid grid-nogutter">
                             <ng-container *ngFor="let code of codes">
@@ -45,10 +45,10 @@
                         styleClass="p-datatable-gridlines">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>SKU item</th>
-                                <th>Ubicacion</th>
-                                <th>Cantidad</th>
-                                <th>Recogido</th>
+                                <th>{{'TEXT.SKU' |translate}}</th>
+                                <th>{{'TEXT.LOCATION' |translate}}</th>
+                                <th>{{'TEXT.QUANTITY' |translate}}</th>
+                                <th>{{'TEXT.PICKED' |translate}}</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-selected="selected">
@@ -69,11 +69,11 @@
                     <div *ngIf="!checkStatusByList(code)" class="card">
                         <form [formGroup]="receptionFormGroup">
                             <div class="col-12" style="padding: 5px; display: flex; flex-direction: column;">
-                                <label for="PG">SKU</label>
+                                <label for="PG">{{'TEXT.SKU' |translate}}</label>
                                 <input type="text" formControlName="SKU" pInputText placeholder="">
-                                <label for="PG">Ubicacion</label>
+                                <label for="PG">{{'TEXT.LOCATION' |translate}}</label>
                                 <input type="text" formControlName="location" pInputText placeholder="">
-                                <label for="PG">Cantidad</label>
+                                <label for="PG">{{'TEXT.QUANTITY' |translate}}</label>
                                 <input type="text" formControlName="quantity" pInputText placeholder="">
                                 <!-- <div *ngIf="showErrorForPG" class="error-message">
                                     <p style="color:red">Error: The PG value is incorrect.</p>
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-15" style="padding-top: 10px;">
                                     <div class="flex flex-wrap gap-2">
-                                        <button pButton pRipple label="Recoger" type="button" (click)="pickup()" style="width: 100%;"></button>
+                                        <button pButton pRipple label="{{'TEXT.PICK' |translate}}" type="button" (click)="pickup()" style="width: 100%;"></button>
                                     </div>
                                 </div>
                             </div>

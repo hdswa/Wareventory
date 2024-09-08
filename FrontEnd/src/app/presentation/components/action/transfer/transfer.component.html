@@ -2,12 +2,12 @@
 <div class="grid p-fluid">
     <div class="col-6 md:col-6">
         <div class="card">
-            <h5>Transferencia</h5>
+            <h5>{{'TEXT.TRANSFER' |translate}}</h5>
             <form [formGroup]="transferFormGroup">
             <div class="grid formgrid">
                 <!-- PG caja input -->
                 <div class="col-12" style="padding: 5px;">
-                    <label for="PG">Origen</label>
+                    <label for="PG">{{'TEXT.ORIGIN' |translate}}</label>
                     <input type="text" formControlName="origin" pInputText placeholder="">
                     <div *ngIf="displayError" class="error-message">
                         <p style="color:red">{{errorMessage}}</p>
@@ -29,8 +29,8 @@
                     >
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>SKU</th>
-                                <th>Cantidad</th>
+                                <th>{{'TEXT.SKU' |translate}}</th>
+                                <th>{{'TEXT.QUANTITY' |translate}}</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-item>
@@ -44,9 +44,9 @@
                 </div>
 
                 <div *ngIf="displayDestination" class="col-12" style="padding:13px">
-                    <label for="Destination">Destino</label>
+                    <label for="Destination">{{'TEXT.DESTINATION' |translate}}</label>
                     <input type="text" formControlName="destination" pInputText placeholder="">
-                    <label for="Destination">Cantidad</label>
+                    <label for="Destination">{{'TEXT.QUANTITY' |translate}}</label>
                     <input type="text" formControlName="transferQuantity" pInputText placeholder="">
                     <div *ngIf="displayLocationError">
                         <p style="color:red">{{errorMessage}}</p>
@@ -54,7 +54,7 @@
 
                     <div class="col-12" style="padding: 13px;" *ngIf="displaySearch">
                         <div class="flex flex-wrap gap-2">
-                            <button pButton pRipple label="Transferir" type="button" (click)="transferItem()"></button>
+                            <button pButton pRipple label="{{'TEXT.TRANSFER' |translate}}" type="button" (click)="transferItem()"></button>
                         </div>
                     </div>
 

@@ -2,25 +2,25 @@
 <div class="grid p-fluid">
 	<div class="col-12 md:col-20">
 		<div class="card">
-			<h5>Busqueda de Trabajos</h5>
+			<h5>{{'TEXT.JOB_SEARCH' |translate}}</h5>
             <form [formGroup]="jobFormGroup">
 			<div class="grid formgrid">
                 
 				<div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="jobCode">Codigo de Trabajo</label>
+                    <label for="jobCode">{{'TEXT.JOB_CODE'|translate}}</label>
 					<input type="text" formControlName="jobId" pInputText placeholder="">
 				</div>
 				<div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="Supplier">Distribuidor</label>
+                    <label for="Supplier">{{'TEXT.SUPPLIER'|translate}}</label>
 					<input type="text"formControlName="supplier" pInputText placeholder="">
 				</div>
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="PG ">Group de Paquete(PG)</label>
+                    <label for="PG ">{{'TEXT.PACKAGE_GROUP'|translate}}</label>
 					<input type="text" formControlName="pg" pInputText placeholder="">
 				</div>
                 
                 <div class="col-12 mb-2 lg:col-4 lg:mb-0"style="padding: 5px;">
-                    <label for="itemSKU">Codigo de Producto(SKU)</label>
+                    <label for="itemSKU">{{'TEXT.SKU_CODE'|translate}}</label>
 					<input type="text" formControlName="sku" pInputText placeholder="">
 				</div>
              
@@ -37,7 +37,7 @@
                 <div class="col-12 mb-2 lg:col-4 lg:mb-1"style="padding: 13px;">
                     <div class="flex flex-wrap gap-2">
                         <label for=""></label>
-                        <button pButton pRipple label="Submit" (click)="processInventoryForm()"></button>
+                        <button pButton pRipple label="{{'TEXT.SEARCH'|translate}}" (click)="processInventoryForm()"></button>
                 </div>
                 
                 </div>

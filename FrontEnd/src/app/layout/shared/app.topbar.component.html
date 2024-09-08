@@ -18,15 +18,28 @@
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
         </button> -->
+        <div class="p-link layout-topbar-button" (click)="toggleDropdown()">
+            <i class="pi pi-globe"></i>
+        </div>
+        <div *ngIf="dropdownVisible" class="language-dropdown">
+            <p-dropdown 
+                [options]="languages" 
+                [(ngModel)]="selectedLanguage" 
+                (onChange)="changeLanguage($event.value)" 
+                placeholder="Select Language">
+            </p-dropdown>
+        </div>
         <div *ngIf="!existToken">
         <button class="p-link layout-topbar-button" [routerLink]="'/auth/login'">
             <i class="pi pi-sign-in"></i>
             <span>Log in</span>
         </button>
         </div>
+        <div *ngIf="existToken">
         <button class="p-link layout-topbar-button" (click)="logout()">
             <i class="pi pi-sign-out"></i>
             <span>Log Out</span>
         </button>
+        </div>
     </div>
 </div>
