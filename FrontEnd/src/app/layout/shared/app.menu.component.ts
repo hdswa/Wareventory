@@ -66,8 +66,8 @@ export class AppMenuComponent implements OnInit {
                 label: 'Admin',
                 items: [
                     { label: this.translations["MENU.NEW_USER"], icon: 'pi pi-fw pi-user-plus', routerLink: ['/admin/register'] },
-                    { label: this.translations["MENU.NEW_JOB"], icon: 'pi pi-fw pi-plus-circle', routerLink: ['/admin/new-job'] },
                     { label: this.translations["MENU.DELETE_USER"], icon: 'pi pi-fw pi-user-minus', routerLink: ['/admin/delete-user'] },
+                    { label: this.translations["MENU.NEW_JOB"], icon: 'pi pi-fw pi-plus-circle', routerLink: ['/admin/new-job'] },
                     { label: this.translations["MENU.ADMIN_JOB"], icon: 'pi pi-fw pi-minus-circle', routerLink: ['/admin/delete-job'] },
                     { label: this.translations["MENU.ADMIN_SHIPPING"], icon: 'pi pi-fw pi-minus-circle', routerLink: ['/admin/admin-shipping-list'] },
                     { label: this.translations["MENU.ADMIN_LOCATION"], icon: 'pi pi-fw pi-minus-circle', routerLink: ['/admin/admin-location'] }

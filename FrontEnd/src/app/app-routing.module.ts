@@ -11,7 +11,7 @@ import { AdminAuthGuard } from './presentation/components/auth/authGuard/admin.g
                 path: '', component: AppLayoutComponent,
                 children: [
                     { path: '', loadChildren: () => import('./presentation/components/dashboard/dashboard.module')
-                                                        .then(m => m.DashboardModule)},
+                                                        .then(m => m.DashboardModule),canActivate: [AuthGuard] },
                     { path: 'content', loadChildren: () => import('./presentation/components/content/content.module')
                                                         .then(m => m.ContentModule),canActivate: [AuthGuard] },
                     { path: 'action', loadChildren: () => import('./presentation/components/action/action.module')

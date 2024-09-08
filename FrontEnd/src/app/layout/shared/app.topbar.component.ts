@@ -23,7 +23,10 @@ export class AppTopBarComponent implements OnInit{
     public dropdownVisible: boolean = false;
     public languages: any[] = [
         { label: 'English', value: 'en' },
-        { label: 'Español', value: 'es' }
+        { label: 'Español', value: 'es' },
+        { label: 'Deutsch', value: 'de' },
+        { label: '中文', value:'zh-cn'},
+
     ];
     public selectedLanguage:string;
     ngOnInit(): void {

@@ -51,9 +51,8 @@ export class PickingComponent implements OnInit {
           console.log(data)
           this.pickingListCodes=data.map(item=>item.code);
          
-          this.pickingListStatus = data
-          .filter(item => item.status !== 'Completed')
-          .sort((a, b) => a.code.localeCompare(b.code));
+          this.pickingListStatus = data.filter(item => item.status !== 'Completed')
+          this.pickingListStatus.sort((a, b) => a.code.localeCompare(b.code));
           
         },
       (error) => {
@@ -73,7 +72,7 @@ export class PickingComponent implements OnInit {
       (data) => {
           console.log("pickinglistItme",data)
        
-          this.pickingListItems=data.sort((a, b) => (a.code.localeCompare(b.code)));
+          this.pickingListItems=data
           this.checkStatusByCode(this.code)
       },
       (error) => {

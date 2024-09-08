@@ -3,9 +3,9 @@
     <div class="col-12">
         <div class="card">
         
-                <h5>{{'ADMIN.SHIPPING_LIST_MANAGEMENT' |translate}}</h5>
+            <h5>{{'ADMIN.SHIPPING_LIST_MANAGEMENT' |translate}}</h5>
             
-                <button pButton type="button" label="{{'ADMIN.ADD_SHIPPING_LIST_MANAGMENT' |translate}}" style="width: 100%;" (click)="showDialog()"></button>
+                <button pButton type="button" label="{{'ADMIN.ADD_SHIPPING_LIST' |translate}}" style="width: 100%;" (click)="showDialog()"></button>
                 <div style="justify-content: center;display: flex;align-items: center;margin-top: 10px;">
                     <input type="text" [(ngModel)]="filterText" placeholder="{{'ADMIN.FILTER_BY_CODE' |translate}}" (input)="applyFilter()">
                 </div>
@@ -42,13 +42,13 @@
         </div>
     </div>
 
-    <p-dialog header="Añadir una nueva lista" [(visible)]="displayDialog" [modal]="true" [style]="{width: '50vw'}">
+    <p-dialog header="{{'ADMIN.ADD_NEW_LIST' |translate}}" [(visible)]="displayDialog" [modal]="true" [style]="{width: '50vw'}">
    
         <div class="col-12" style="padding: 13px;">
             <div class="flex flex-wrap gap-2">
                 <input type="text" pInputText placeholder="Codigo de la lista" [(ngModel)]="newPickingListCode" />
-                <button pButton type="button" label="Añadir Objeto" (click)="showNewObjetcDialog()"></button>
-                <button pButton type="button" label="Importar de JSON" (click)="showJSONDialog()"></button>
+                <button pButton type="button" label="{{'ADMIN.ADD_OBJECT' |translate}}" (click)="showNewObjetcDialog()"></button>
+                <button pButton type="button" label="{{'ADMIN.IMPORT_FROM_JSON' |translate}}" (click)="showJSONDialog()"></button>
             </div>
         </div>
 
@@ -94,11 +94,11 @@
   
       
       <p-footer>
-          <button pButton type="button" label="Añadir" icon="pi pi-times" (click)="addPickingList()"></button>
+          <button pButton type="button" label="{{'ADMIN.CLOSE' |translate}}" icon="pi pi-times" (click)="addPickingList()"></button>
       </p-footer>
   </p-dialog>
 
-  <p-dialog header="Añadir Objeto" [(visible)]="displayObjectDialog " [modal]="true" [style]="{width: '25vw'}">
+  <p-dialog header="{{'ADMIN.ADD_OBJECT' |translate}}" [(visible)]="displayObjectDialog " [modal]="true" [style]="{width: '25vw'}">
     <div class="col-12 md:col-12">
         <div class="card">
             
@@ -116,7 +116,7 @@
                 </div>
                     <div class="col-12" style="padding: 13px;">
                         <div class="flex flex-wrap gap-2">
-                            <button pButton pRipple label="Añadir" type="button" (click)="addItem()"></button>
+                            <button pButton pRipple label="{{'ADMIN.ADD' |translate}}" type="button" (click)="addItem()"></button>
                         </div>
                     </div>
                 
@@ -125,12 +125,12 @@
         </div>
         </div>
     <p-footer>
-        <button pButton type="button" label="Close" icon="pi pi-times" (click)="hideNewObjectDialog()"></button>
+        <button pButton type="button" label="{{'ADMIN.CLOSE' |translate}}" icon="pi pi-times" (click)="hideNewObjectDialog()"></button>
     </p-footer>
   </p-dialog>
 
 
-  <p-dialog header="Importar desde texto JSON" [(visible)]="displayJSONdialog" [modal]="true" [style]="{width: '50vw'}">
+  <p-dialog header="{{'ADMIN.IMPORT_FROM_JSON' |translate}}" [(visible)]="displayJSONdialog" [modal]="true" [style]="{width: '50vw'}">
     <div class="col-12 md:col-12">
         <div class="card">  
                 <textarea 
@@ -144,12 +144,12 @@
         </div>
         <div class="col-12" style="padding: 13px;">
             <div class="flex flex-wrap gap-2">
-                <button pButton pRipple label="Añadir" type="button" (click)="addPickingListByJson()"></button>
+                <button pButton pRipple label="{{'ADMIN.ADD' |translate}}" type="button" (click)="addPickingListByJson()"></button>
             </div>
         </div>
         </div>
     <p-footer>
-        <button pButton type="button" label="Close" icon="pi pi-times" (click)="hideJSONDialog()"></button>
+        <button pButton type="button" label="{{'ADMIN.CLOSE' |translate}}" icon="pi pi-times" (click)="hideJSONDialog()"></button>
     </p-footer>
     </p-dialog>
 </div>

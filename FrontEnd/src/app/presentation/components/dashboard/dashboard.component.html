@@ -63,13 +63,13 @@
 
     <div class="col-12 xl:col-6">
         <div class="card">
-            <h5>Recent Actions</h5>
+            <h5>{{'TEXT.RECENT_ACTIVITY'| translate}}</h5>
             <p-table [value]="logs">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Nombre </th>
-                        <th>Accion </th>
-                        <th>Tiempo </th>
+                        <th>{{'TEXT.NOMBRE'| translate}} </th>
+                        <th>{{'TEXT.ACTION'| translate}} </th>
+                        <th>{{'TEXT.TIEMPO'| translate}} </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-log>
