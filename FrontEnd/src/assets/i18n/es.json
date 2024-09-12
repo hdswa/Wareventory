@@ -131,7 +131,9 @@
         "JOB_DELETE_SUCCESS_MESSAGE":"Trabajo eliminado con éxito",
         "JOB_DELETE_ERROR_MESSAGE":"Error al eliminar el trabajo",
         "SHIPPING_LIST_ADD_SUCCESS_MESSAGE":"Lista de envíos añadida con éxito",
-        "SHIPPING_LIST_ADD_ERROR_MESSAGE":"Error al añadir la lista de envíos"
+        "SHIPPING_LIST_ADD_ERROR_MESSAGE":"Error al añadir la lista de envíos",
+        "GENERIC_ERROR_MESSAGE":"Hubo un error con la operación",
+        "GENERIC_SUCCESS_MESSAGE":"La operación se realizó con éxito"
     }
 
     

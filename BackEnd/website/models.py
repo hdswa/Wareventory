@@ -165,7 +165,7 @@ class Location_data(DynamicDocument):
     meta = {'collection': 'Location_data'}
     
     @classmethod
-    def get_items_by_location(  cls, location):
+    def get_items_by_location(cls, location):
         return cls.objects.filter(location=location).all()
     @classmethod
     def get_location_by_sku(cls, sku):

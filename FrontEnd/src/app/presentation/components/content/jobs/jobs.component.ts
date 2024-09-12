@@ -66,7 +66,8 @@ export class JobsComponent implements OnInit{
           this.dataArray = data;
           this.gotData = true;
           // console.log(data)
-          this.toastMessage('success', 'Success', 'Data retrieved successfully');
+          
+          this.toastMessage('success', 'Success', this.translateService.instant('MESSAGE.GENERIC_SUCCESS_MESSAGE'));
       },
       (error) => {
           console.log(error);

@@ -131,6 +131,8 @@
     "JOB_DELETE_SUCCESS_MESSAGE": "Successfully deleted job",
     "JOB_DELETE_ERROR_MESSAGE": "Error deleting job",
     "SHIPPING_LIST_ADD_SUCCESS_MESSAGE": "Shipping list added successfully",
-    "SHIPPING_LIST_ADD_ERROR_MESSAGE": "Error adding shipping list"
+    "SHIPPING_LIST_ADD_ERROR_MESSAGE": "Error adding shipping list",
+    "GENERIC_ERROR_MESSAGE": "The operation could not be completed",
+    "GENERIC_SUCCESS_MESSAGE": "The operation was completed successfully"
   }
 }

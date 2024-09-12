@@ -32,6 +32,10 @@ export class AppTopBarComponent implements OnInit{
     ngOnInit(): void {
         this.existToken=false;
         this.getToken();    
+        if (sessionStorage.getItem('language') == null) {
+            sessionStorage.setItem('language', 'es');
+            this.translateService.use(sessionStorage.getItem('language'));
+        }
     }
     getToken(){
         console.log("getToken")

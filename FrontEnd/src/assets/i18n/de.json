@@ -131,6 +131,8 @@
       "JOB_DELETE_SUCCESS_MESSAGE": "Auftrag erfolgreich gelöscht",
       "JOB_DELETE_ERROR_MESSAGE": "Fehler beim Löschen des Jobs",
       "SHIPPING_LIST_ADD_SUCCESS_MESSAGE": "Versandliste erfolgreich hinzugefügt",
-      "SHIPPING_LIST_ADD_ERROR_MESSAGE": "Fehler beim Hinzufügen der Versandliste"
+      "SHIPPING_LIST_ADD_ERROR_MESSAGE": "Fehler beim Hinzufügen der Versandliste",
+      "GENERIC_ERROR_MESSAGE": "Beim Vorgang ist ein Fehler aufgetreten",
+      "GENERIC_SUCCESS_MESSAGE": "Die Operation wurde erfolgreich durchgeführt"
     }
   }

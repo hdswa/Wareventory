@@ -131,6 +131,8 @@
       "JOB_DELETE_SUCCESS_MESSAGE": "已成功删除作业",
       "JOB_DELETE_ERROR_MESSAGE": "删除作业时出错",
       "SHIPPING_LIST_ADD_SUCCESS_MESSAGE": "发货清单添加成功",
-      "SHIPPING_LIST_ADD_ERROR_MESSAGE": "添加发货清单时出错"
+      "SHIPPING_LIST_ADD_ERROR_MESSAGE": "添加发货清单时出错",
+      "GENERIC_ERROR_MESSAGE": "操作出现错误",
+      "GENERIC_SUCCESS_MESSAGE": "操作顺利完成"
     }
   }
