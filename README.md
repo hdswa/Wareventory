@@ -1,6 +1,9 @@
 # WAR
+This is a simple web design that trys to mimic to working enviorment of a logistics warehouse.
+This project uses hexagonal arquitecture with Angular TS as FrontEnd
+and a simple backend using Python-Flask with a Mongo database
 
-## 4.1 Application Deployment and Local Development
+## Application Deployment and Local Development
 
 To deploy the web application locally, the following initial requirements are needed:
 - Python 3.X (version 3.0 or higher)
