@@ -1,4 +1,5 @@
-# WAR
+# Wareventory
+
 This is a simple web design that trys to mimic to working enviorment of a logistics warehouse.
 This project uses hexagonal arquitecture with Angular TS as FrontEnd
 and a simple backend using Python-Flask with a Mongo database
